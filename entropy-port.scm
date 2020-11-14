@@ -13,7 +13,7 @@
 
 (import scheme chicken)
 
-(use
+(import
   (only type-checks check-input-port check-procedure check-symbol check-string check-number)
   (only type-errors warning-argument-type)
   entropy-source entropy-support

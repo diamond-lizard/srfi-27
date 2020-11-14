@@ -7,7 +7,7 @@
 ==== Usage
 
 <enscript language=scheme>
-(use composite-entropy-source)
+(import composite-entropy-source)
 </enscript>
 
 ==== composite-entropy-source
@@ -34,7 +34,7 @@ Experimental at best.
 
 (import scheme chicken)
 
-(use
+(import
   (only data-structures conc reverse-string-append ->string intersperse)
   (only type-errors error-argument-type)
   srfi-1

@@ -9,7 +9,7 @@
 
 (import scheme chicken)
 
-(use
+(import
   (only type-checks check-procedure check-symbol check-string)
   entropy-source
   entropy-support)

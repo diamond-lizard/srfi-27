@@ -20,7 +20,7 @@
 
 (import scheme chicken)
 
-(use
+(import
   (only mathh-consts pi)
   (only type-errors error-argument-type)
   (only type-checks

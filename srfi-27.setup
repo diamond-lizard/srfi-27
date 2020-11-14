@@ -1,6 +1,6 @@
 ;;;; srfi-27.setup  -*- Hen -*-
 
-(use setup-helper-mod)
+(import setup-helper-mod)
 
 (verify-extension-name "srfi-27")
 

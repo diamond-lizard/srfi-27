@@ -20,7 +20,7 @@
   srfi-27-paretos
   srfi-27-levys
   srfi-27-weibulls)
-(use
+(import
   srfi-27-normals
   srfi-27-exponentials
   srfi-27-triangles

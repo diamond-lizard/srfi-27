@@ -1,16 +1,16 @@
 ; Chicken
 
-(use numbers) ;For rndstate = rndstate since large integers used
-(use srfi-27 mrg32k3a)
+(import numbers) ;For rndstate = rndstate since large integers used
+(import srfi-27 mrg32k3a)
 
 ;; Select platform specific entropy source
 
 (cond-expand
   (windows
-    (use entropy-windows)
+    (import entropy-windows)
     (current-entropy-source (make-entropy-source-crypt)) )
   (unix
-    (use entropy-unix)
+    (import entropy-unix)
     (current-entropy-source (make-entropy-source-random-device)) )
   (else) )
 

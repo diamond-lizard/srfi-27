@@ -1,7 +1,7 @@
 ;;;; srfi-27-test.scm
 ;;;; Kon Lovett, Dec '17
 
-(use test)
+(import test)
 
 ;;;
 
@@ -9,13 +9,13 @@
 
 ;;
 
-(use srfi-27)
+(import srfi-27)
 
 ;;;
 
 (print "*** Original Tests ***")
 
-(use utils)
+(import utils)
 
 (system* "csi -n -s test-mrg32k3a.scm")
 (system* "csi -n -s test-confidence")
@@ -31,11 +31,11 @@
 
 ;
 
-(use (srfi 1) (srfi 4) data-structures)
+(import (srfi 1) (srfi 4) data-structures)
 
 ;
 
-(use random-source entropy-source)
+(import random-source entropy-source)
 
 (test-group "basics entropy"
   (test-assert (entropy-source? (current-entropy-source)))
@@ -71,7 +71,7 @@
 
 ;
 
-(use srfi-27-uniform-random)
+(import srfi-27-uniform-random)
 
 (test-group "uniform-random"
 
@@ -106,7 +106,7 @@
 
 ; Vectors
 
-(use srfi-27-vector)
+(import srfi-27-vector)
 
 (define-constant VECTOR-LENGTH-LIMIT 10)
 (define-constant VECTOR-EXAMPLES-LIMIT 3)
@@ -139,7 +139,7 @@
 
 ; Distributions
 
-(use srfi-27-distributions)
+(import srfi-27-distributions)
 
 (define-constant DISTRIBUTION-EXAMPLES-LIMIT 3)
 
@@ -184,13 +184,13 @@
 
 ; Composite Entropy (experimental - at best)
 
-(use composite-entropy-source)
-(use entropy-clock)
+(import composite-entropy-source)
+(import entropy-clock)
 (cond-expand
   (windows
-    (use entropy-windows) )
+    (import entropy-windows) )
   (unix
-    (use entropy-unix) ) )
+    (import entropy-unix) ) )
 
 ;FIXME use entropy name
 (define-constant COMPOSITE-ENTROPY-TITLE
@@ -228,8 +228,8 @@
 
 ; Composite Random (experimental - at best)
 
-(use composite-random-source)
-(use mwc mrg32k3a moa)
+(import composite-random-source)
+(import mwc mrg32k3a moa)
 
 ;FIXME use random name
 (test-group "composite random : mwc + mrg32k3a + moa"

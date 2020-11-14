@@ -7,7 +7,7 @@
 ==== Usage
 
 <enscript language=scheme>
-(use composite-random-source)
+(import composite-random-source)
 </enscript>
 
 ==== composite-random-source-constructor

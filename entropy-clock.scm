@@ -8,7 +8,7 @@
 
 (import scheme chicken foreign)
 
-(use entropy-source entropy-support)
+(import entropy-source entropy-support)
 
 ;;;
 

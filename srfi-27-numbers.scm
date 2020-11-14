@@ -34,14 +34,14 @@
     floor))
 (import chicken)
 
-(use
+(import
   (only numbers
     <= < zero? positive? negative?
     + * - / quotient expt
     integer? real?
     exact->inexact inexact->exact
     floor))
-(use
+(import
   (only type-checks
     define-check+error-type
     check-real)

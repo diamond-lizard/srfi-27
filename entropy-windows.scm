@@ -8,7 +8,7 @@
 
 (import scheme chicken foreign)
 
-(use
+(import
   (only ports make-input-port)
   (only srfi-4 make-u8vector u8vector-ref)
   entropy-source entropy-port)

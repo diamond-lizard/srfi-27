@@ -19,7 +19,7 @@
 (import (except scheme <= inexact->exact exact->inexact number?))
 (import chicken foreign)
 
-(use
+(import
   srfi-4
   (only numbers <= inexact->exact exact->inexact number?)
   (only type-errors error-positive-integer)
@@ -37,7 +37,7 @@
     <= inexact->exact exact->inexact))
 
 ;*** DEBUG ***
-(use extras)
+(import extras)
 
 #>
 #include <math.h>
@@ -379,7 +379,7 @@ Undefined symbols for architecture x86_64:
       stub829(long, long, long, long) in mrg32k3a.o
       Dwarf Exception Unwind Info (__eh_frame) in mrg32k3a.o
 ld: symbol(s) not found for architecture x86_64
-clang: error: linker command failed with exit code 1 (use -v to see invocation)
+clang: error: linker command failed with exit code 1 (import -v to see invocation)
 |#
   #; ;
   (define (ring-product! v a b) ;A*B in ((Z/m1*Z) x (Z/m2*Z))^(3x3)

@@ -23,14 +23,14 @@
 
 (import scheme chicken)
 
-(use
+(import
   (only data-structures alist-ref alist-update!)
   (only srfi-1 alist-cons alist-delete!)
   (only type-checks define-check+error-type check-procedure check-symbol)
   source-registration)
 
 #; ;NO YOU 'EFFING MORON
-(use typed-define)
+(import typed-define)
 
 ;;;
 

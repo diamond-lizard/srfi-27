@@ -13,7 +13,7 @@
 
 (import scheme chicken)
 
-(use
+(import
   (only type-errors error-argument-type)
   (only type-checks
     define-check+error-type

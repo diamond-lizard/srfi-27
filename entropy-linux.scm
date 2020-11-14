@@ -8,7 +8,7 @@
 
 (import scheme chicken)
 
-(use entropy-source entropy-procedure)
+(import entropy-source entropy-procedure)
 
 ;;; Entropy from getrandom
 

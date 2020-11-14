@@ -1,18 +1,18 @@
 ; Chicken
 
-(use numbers)
-(use srfi-27)
-(use random-source)
-(use mwc moa mrg32k3a #;bsdrnd)  ;load them all
+(import numbers)
+(import srfi-27)
+(import random-source)
+(import mwc moa mrg32k3a #;bsdrnd)  ;load them all
 
 ;; Select platform specific entropy source
 
 (cond-expand
   (windows
-    (use entropy-windows)
+    (import entropy-windows)
     (current-entropy-source (make-entropy-source-crypt)) )
   (unix
-    (use entropy-unix)
+    (import entropy-unix)
     (current-entropy-source (make-entropy-source-random-device)) )
   (else) )
 

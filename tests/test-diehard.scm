@@ -1,18 +1,18 @@
 ; Chicken
 
-(use files ports)
-(use srfi-27)
-(use mrg32k3a)
-(use md5) ;for Diehard
+(import files ports)
+(import srfi-27)
+(import mrg32k3a)
+(import md5) ;for Diehard
 
 ;; Select platform specific entropy source
 
 (cond-expand
   (windows
-    (use entropy-windows)
+    (import entropy-windows)
     (current-entropy-source (make-entropy-source 'entropy-crypt)) )
   (unix
-    (use entropy-unix)
+    (import entropy-unix)
     (current-entropy-source (make-entropy-source 'random-device)) )
   (else) )
 
@@ -65,7 +65,7 @@
 ;
 ;    The message digest is md5sum = 750ac219ff40c50bb2d04ff5eff9b24c.
 
-(use md5 message-digest-bv)
+(import md5 message-digest-bv)
 (import (only utils read-all))
 
 (define (md5-digest port)

@@ -13,7 +13,7 @@
 
 (import scheme chicken)
 
-(use
+(import
   (only data-structures alist-ref alist-update!)
   (only srfi-1 alist-delete!)
   (only type-checks define-check+error-type check-procedure check-symbol check-list))

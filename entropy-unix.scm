@@ -9,7 +9,7 @@
 
 (import scheme chicken)
 
-(use entropy-source entropy-port)
+(import entropy-source entropy-port)
 
 ;;;
 

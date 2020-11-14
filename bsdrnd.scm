@@ -24,8 +24,8 @@
   numbers
   srfi-27-numbers)
 
-(use srfi-4)
-(use random-source entropy-source)
+(import srfi-4)
+(import random-source entropy-source)
 
 (import (prefix random-bsd bsd::))
 (require-library random-bsd)

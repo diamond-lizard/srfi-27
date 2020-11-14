@@ -12,8 +12,8 @@
 (import (except scheme + - * quotient = < abs))
 (import chicken)
 
-(use (only numbers + - * quotient = < abs))
-(use
+(import (only numbers + - * quotient = < abs))
+(import
   data-structures
   (only miscmacros exchange!)
   vector-lib

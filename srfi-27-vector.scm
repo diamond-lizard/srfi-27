@@ -19,7 +19,7 @@
 
 (import scheme chicken)
 
-(use
+(import
   (only type-checks check-cardinal-integer check-vector check-procedure)
   (only type-errors error-vector)
   random-source

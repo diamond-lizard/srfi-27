@@ -10,8 +10,8 @@
 
 (import chicken foreign)
 
-(use (only numbers <= inexact->exact exact->inexact number?))
-(use
+(import (only numbers <= inexact->exact exact->inexact number?))
+(import
   srfi-4
   random-source
   entropy-source
