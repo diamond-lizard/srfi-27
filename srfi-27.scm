@@ -51,6 +51,7 @@
 (import
   scheme
   (chicken base)
+  (chicken type)
   (only srfi-4 make-u8vector make-f64vector)
   (only miscmacros define-parameter)
   (only type-errors error-argument-type warning-argument-type)
