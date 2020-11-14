@@ -130,6 +130,8 @@ mrg32k3a_random_real( double *state )
 (import (chicken base))
 (import (chicken foreign))
 
+(import (chicken flonum))
+
 (import
   srfi-4
   (only type-errors error-positive-integer)
