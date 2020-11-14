@@ -38,7 +38,7 @@ Experimental at best.
 (import scheme)
 (import (chicken base))
 
-(use
+(import
   (only data-structures conc reverse-string-append ->string intersperse)
   (only type-errors error-argument-type)
   srfi-1
