@@ -131,6 +131,7 @@ mrg32k3a_random_real( double *state )
 (import (chicken foreign))
 
 (import (chicken flonum))
+(import chicken.fixnum)
 
 (import
   srfi-4
