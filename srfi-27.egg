@@ -1,0 +1,206 @@
+;;;; srfi-27.egg  -*- scheme -*
+
+((synopsis "Sources of Random Bits")
+ (version "4.0.0")
+ (category data)
+ (author "Sebastian Egner, for CHICKEN by [[kon lovett]]")
+ (license "BSD")
+ (dependencies
+	check-errors
+	timed-resource
+	miscmacros
+	vector-lib
+	mathh)
+ (test-dependencies test)
+ (components
+  (extension source-registration
+    (types-file)
+    (component-dependencies )
+    (csc-options "-strict-types"
+      "-O3" "-d0"
+      "-no-procedure-checks" "-no-argc-checks" "-no-bound-checks"))
+  (extension srfi-27-numbers
+    (types-file)
+    (component-dependencies )
+    (csc-options "-strict-types"
+      "-O3" "-d0"
+      "-no-procedure-checks" "-no-argc-checks" "-no-bound-checks"))
+  (extension srfi-27-vector-support
+    (types-file)
+    (component-dependencies )
+    (csc-options "-strict-types"
+      "-O3" "-d0"
+      "-no-procedure-checks" "-no-argc-checks" "-no-bound-checks"))
+  ;; Entropy Source Modules
+  (extension entropy-source
+    (types-file)
+    (component-dependencies )
+    (csc-options "-strict-types"
+      "-O3" "-d0"
+      "-no-procedure-checks" "-no-argc-checks" "-no-bound-checks"))
+  (extension entropy-support
+    (types-file)
+    (component-dependencies )
+    (csc-options "-strict-types"
+      "-O3" "-d0"
+      "-no-procedure-checks" "-no-argc-checks" "-no-bound-checks"))
+  (extension entropy-clock
+    (types-file)
+    (component-dependencies )
+    (csc-options "-strict-types" "-O3" "-d0" "-no-procedure-checks-for-toplevel-bindings"))
+  (extension entropy-procedure
+    (types-file)
+    (component-dependencies )
+    (csc-options "-strict-types" "-O3" "-d0" "-no-procedure-checks-for-toplevel-bindings"))
+  (extension entropy-port
+    (types-file)
+    (component-dependencies )
+    (csc-options "-strict-types" "-O3" "-d0" "-no-procedure-checks-for-toplevel-bindings"))
+  (cond-expand
+    (windows
+      (extension entropy-windows
+        (types-file)
+        (component-dependencies )
+        (csc-options
+          "-strict-types"
+          "-O3" "-d0"
+          "-no-procedure-checks-for-toplevel-bindings")) )
+    (linux
+      (extension entropy-linux
+        (types-file)
+        (component-dependencies )
+        (csc-options
+          "-strict-types"
+          "-O3" "-d0"
+          "-no-procedure-checks-for-toplevel-bindings")) )
+    (unix
+      (extension entropy-unix
+        (types-file)
+        (component-dependencies )
+        (csc-options
+          "-strict-types"
+          "-O3" "-d0"
+          "-no-procedure-checks-for-toplevel-bindings")) )
+    (else) )
+  ;; Random Source Modules
+  #; ;WIP
+  (extension well512
+    (types-file)
+    (component-dependencies )
+    (csc-options "-strict-types"
+      "-O3" "-d0"
+      "-no-procedure-checks" "-no-argc-checks" "-no-bound-checks"))
+  (extension random-source
+    (types-file)
+    (component-dependencies )
+    (csc-options "-strict-types"
+      "-O3" "-d0"
+      "-no-procedure-checks" "-no-argc-checks" "-no-bound-checks"))
+  ;-c++ w/ crunch
+  (extension mrg32k3a
+    (types-file)
+    (component-dependencies )
+    (csc-options "-strict-types"
+      "-O3" "-d0"
+      "-no-procedure-checks" "-no-argc-checks" "-no-bound-checks"))
+  (extension mwc
+    (types-file)
+    (component-dependencies )
+    (csc-options "-strict-types"
+      "-O3" "-d0"
+      "-no-procedure-checks" "-no-argc-checks" "-no-bound-checks"))
+  (extension moa
+    (types-file)
+    (component-dependencies )
+    (csc-options "-strict-types"
+      "-O3" "-d0"
+      "-no-procedure-checks" "-no-argc-checks" "-no-bound-checks"))
+  ;; Main Modules
+  (extension srfi-27
+    (types-file)
+    (component-dependencies )
+    (csc-options "-strict-types" "-O3" "-d0" "-no-procedure-checks-for-toplevel-bindings"))
+  (extension srfi-27-uniform-random
+    (types-file)
+    (component-dependencies )
+    (csc-options "-strict-types" "-O3" "-d0" "-no-procedure-checks-for-toplevel-bindings"))
+  (extension srfi-27-distributions-support
+    (types-file)
+    (component-dependencies )
+    (csc-options "-strict-types" "-O3" "-d0" "-no-procedure-checks-for-toplevel-bindings"))
+  (extension srfi-27-bernoullis
+    (types-file)
+    (component-dependencies )
+    (csc-options "-strict-types" "-O3" "-d0" "-no-procedure-checks-for-toplevel-bindings"))
+  (extension srfi-27-binomials
+    (types-file)
+    (component-dependencies )
+    (csc-options "-strict-types" "-O3" "-d0" "-no-procedure-checks-for-toplevel-bindings"))
+  (extension srfi-27-cauchys
+    (types-file)
+    (component-dependencies )
+    (csc-options "-strict-types" "-O3" "-d0" "-no-procedure-checks-for-toplevel-bindings"))
+  (extension srfi-27-normals
+    (types-file)
+    (component-dependencies )
+    (csc-options "-strict-types" "-O3" "-d0" "-no-procedure-checks-for-toplevel-bindings"))
+  ;needs normals
+  (extension srfi-27-gammas
+    (types-file)
+    (component-dependencies )
+    (csc-options "-strict-types" "-O3" "-d0" "-no-procedure-checks-for-toplevel-bindings"))
+  ;needs gammas
+  (extension srfi-27-erlangs
+    (types-file)
+    (component-dependencies )
+    (csc-options "-strict-types" "-O3" "-d0" "-no-procedure-checks-for-toplevel-bindings"))
+  (extension srfi-27-exponentials
+    (types-file)
+    (component-dependencies )
+    (csc-options "-strict-types" "-O3" "-d0" "-no-procedure-checks-for-toplevel-bindings"))
+  (extension srfi-27-geometrics
+    (types-file)
+    (component-dependencies )
+    (csc-options "-strict-types" "-O3" "-d0" "-no-procedure-checks-for-toplevel-bindings"))
+  (extension srfi-27-levys
+    (types-file)
+    (component-dependencies )
+    (csc-options "-strict-types" "-O3" "-d0" "-no-procedure-checks-for-toplevel-bindings"))
+  (extension srfi-27-lognormals
+    (types-file)
+    (component-dependencies )
+    (csc-options "-strict-types" "-O3" "-d0" "-no-procedure-checks-for-toplevel-bindings"))
+  ;needs gammas exponentials
+  (extension srfi-27-paretos
+    (types-file)
+    (component-dependencies )
+    (csc-options "-strict-types" "-O3" "-d0" "-no-procedure-checks-for-toplevel-bindings"))
+  (extension srfi-27-poissons
+    (types-file)
+    (component-dependencies )
+    (csc-options "-strict-types" "-O3" "-d0" "-no-procedure-checks-for-toplevel-bindings"))
+  (extension srfi-27-triangles
+    (types-file)
+    (component-dependencies )
+    (csc-options "-strict-types" "-O3" "-d0" "-no-procedure-checks-for-toplevel-bindings"))
+  (extension srfi-27-weibulls
+    (types-file)
+    (component-dependencies )
+    (csc-options "-strict-types" "-O3" "-d0" "-no-procedure-checks-for-toplevel-bindings"))
+  (extension srfi-27-distributions
+    (types-file)
+    (component-dependencies )
+    (csc-options "-strict-types" "-O3" "-d0" "-no-procedure-checks-for-toplevel-bindings"))
+  (extension srfi-27-vector
+    (types-file)
+    (component-dependencies )
+    (csc-options "-strict-types" "-O3" "-d0" "-no-procedure-checks-for-toplevel-bindings"))
+  ;; Composite Source Modules
+  (extension composite-entropy-source
+    (types-file)
+    (component-dependencies )
+    (csc-options "-strict-types" "-O3" "-d0" "-no-procedure-checks-for-toplevel-bindings"))
+  (extension composite-random-source
+    (types-file)
+    (component-dependencies )
+    (csc-options "-strict-types" "-O3" "-d0" "-no-procedure-checks-for-toplevel-bindings")) ) )
