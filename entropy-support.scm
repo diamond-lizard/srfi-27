@@ -28,7 +28,7 @@
   scheme
   (chicken base)
   (chicken foreign)
-  (only extras read-byte)
+  (only (chicken io) read-byte)
   (only srfi-4
     u8vector-set! make-u8vector u8vector-length
     f64vector-set! make-f64vector f64vector-length
