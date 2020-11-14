@@ -999,7 +999,8 @@ undocumented implementation API.
 
 == Author
 
-[[/users/kon-lovett|Kon Lovett]]
+* [[/users/kon-lovett|Kon Lovett]]
+* Ported to Chicken 5 by Kon Lovett and Sergey Goldgaber
 
 
 == Version history
