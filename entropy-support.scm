@@ -33,7 +33,7 @@
     u8vector-set! make-u8vector u8vector-length
     f64vector-set! make-f64vector f64vector-length
     read-u8vector read-u8vector!)
-  (only lolevel move-memory!)
+  (only (chicken memory) move-memory!)
   (only srfi-27-vector-support u8vector-filled! f64vector-filled!))
 
 ;;;
