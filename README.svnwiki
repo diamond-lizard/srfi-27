@@ -1,0 +1,1060 @@
+[[tags: egg]]
+
+== SRFI 27
+
+Source of Random Bits
+
+[[toc:]]
+
+
+== Documentation
+
+A Chicken implementation of [[http://srfi.schemers.org/srfi-27/srfi-27.html|SRFI 27]].
+
+=== SRFI 27
+
+Most procedures are per the SRFI 27 specification document. Only the extensions
+are documented here.
+
+The most obvious extensions are support for multiple random number generators
+and multiple entropy sources.
+
+==== Usage
+
+<enscript language=scheme>
+(use srfi-27)
+</enscript>
+
+==== current-random-source
+
+<procedure>(current-random-source [RANDOM-SOURCE])</procedure>
+
+Parameter for the default {{random-source}}.
+
+The variable {{default-random-source}} is the initial {{(current-random-source)}}.
+
+The initial {{random-source}} is an instance of {{'mrg32k3a}}, per SRFI 27.
+
+==== random-integer/current
+
+<procedure>(random-integer/current) -> (procedure (integer) integer)</procedure>
+
+Returns an {{integer}} random generator from the {{(current-random-source)}}.
+
+Like {{random-integer}} but w/ {{(current-random-source)}}, & a {{procedure}},
+not a {{variable}}.
+
+==== random-real/current
+
+<procedure>(random-real/current) -> (procedure () real)</procedure>
+
+Returns a {{real}} random generator from the {{(current-random-source)}}.
+
+Like {{random-real}} but w/ {{(current-random-source)}}, & a {{procedure}},
+not a {{variable}}.
+
+==== registered-random-sources
+
+<procedure>(registered-random-sources) -> (list-of symbol)</procedure>
+
+Returns a {{list}} of the registered {{random-source}} names.
+
+==== registered-random-source
+
+<procedure>(registered-random-source NAME) -> (disjoint #f (procedure () random-source))</procedure>
+
+Returns the {{random-source}} creator for the specified {{NAME}} or {{#f}} if
+not registered.
+
+==== random-source?
+
+<procedure>(random-source? OBJ) -> boolean</procedure>
+
+{{random-source}} predicate.
+
+<procedure>(check-random-source LOC OBJ [NAM])</procedure>
+
+Raise error when {{OBJ}} not a {{random-source}}. {{NAM}} is the optional
+parameter name.
+
+<procedure>(error-random-source LOC OBJ [NAM])</procedure>
+
+Raise error for {{OBJ}} not a {{random-source}}. {{NAM}} is the optional
+parameter name.
+
+==== make-random-source
+
+<procedure>(make-random-source [SOURCE (current-random-source)]) -> random-source</procedure>
+
+{{SOURCE}} is either a {{random-source}} or the {{symbol}} of a registered
+{{random-source}}, the name.
+
+==== new-random-source
+
+<procedure>(new-random-source [RANDOM-SOURCE (current-random-source)]) -> random-source</procedure>
+
+Same as {{(make-random-source RANDOM-SOURCE)}}.
+
+==== random-source-name
+
+<procedure>(random-source-name RANDOM-SOURCE) -> symbol</procedure>
+
+The symbolic name of the {{RANDOM-SOURCE}}.
+
+==== random-source-documentation
+
+<procedure>(random-source-documentation RANDOM-SOURCE) -> string</procedure>
+
+Some more information for the {{RANDOM-SOURCE}}.
+
+==== random-source-log2-period
+
+<procedure>(random-source-log2-period RANDOM-SOURCE) -> integer</procedure>
+
+The period of the {{RANDOM-SOURCE}} as a power of 2. A {{fixnum}}.
+
+==== random-source-maximum-range
+
+<procedure>(random-source-maximum-range RANDOM-SOURCE) -> inexact-integer</procedure>
+
+The largest integer the {{RANDOM-SOURCE}} can produce without resort to a
+{{bignum}} representation. Currently an inexact-integer {{flonum}}, even for
+64-bit CPUs.
+
+==== random-source-entropy-source
+
+<procedure>(random-source-entropy-source RANDOM-SOURCE) -> entropy-source</procedure>
+
+The current {{entropy-source}} for the {{RANDOM-SOURCE}}.
+
+==== random-source-entropy-source-set!
+
+<procedure>(random-source-entropy-source-set! RANDOM-SOURCE ENTROPY-SOURCE)</procedure>
+
+Changes the current {{entropy-source}} for the {{RANDOM-SOURCE}}.
+
+==== random-source-state-ref
+
+<procedure>(random-source-state-ref RANDOM-SOURCE) -> random-state</procedure>
+
+Per the SRFI 27 specification the {{random-state}} is a valid external
+representation of {{RANDOM-SOURCE}} state.
+
+==== random-source-state-set!
+
+<procedure>(random-source-state-set! RANDOM-SOURCE RANDOM-STATE)</procedure>
+
+Only a {{RANDOM-STATE}} produced by a {{random-source-state-ref}} of the same
+{{random-source}} is acceptable.
+
+==== random-source-randomize!
+
+<procedure>(random-source-randomize! RANDOM-SOURCE [ENTROPY-SOURCE])</procedure>
+
+==== random-source-pseudo-randomize!
+
+<procedure>(random-source-pseudo-randomize! RANDOM-SOURCE I J)</procedure>
+
+==== random-source-make-integers
+
+<procedure>(random-source-make-integers RANDOM-SOURCE) -> (procedure (integer) integer)</procedure>
+
+The result is a {{procedure}}: {{(random-source-make-integers RANDOM-SOURCE)}}
+
+==== random-source-make-reals
+
+<procedure>(random-source-make-reals RANDOM-SOURCE [PRECISION]) -> (procedure () real)</procedure>
+
+The result is a {{procedure}}: {{(random-source-make-reals RANDOM-SOURCE PRECISION)}}
+
+{{PRECISION}} maybe {{#f}}, in which case the value is {{flonum-epsilon}}.
+
+==== random-source-make-u8vectors
+
+<procedure>(random-source-make-u8vectors RANDOM-SOURCE) -> (procedure (integer) u8vector)</procedure>
+
+Returns a {{procedure}} of one argument, the length of the generated vector,
+the returns a vector of random 8-bit unsigned values, a SRFI 4 {{u8vector}}.
+
+The variable {{random-u8vector}} is a {{procedure}}:
+{{(random-source-make-u8vectors default-random-source)}}
+
+==== random-source-make-f64vectors
+
+<procedure>(random-source-make-f64vectors RANDOM-SOURCE [PRECISION]) -> (procedure (integer) f64vector)</procedure>
+
+Returns a {{procedure}} of one argument, the length of the generated vector,
+the returns a vector of random 64-bit floating-point values, a SRFI 4 {{f64vector}}.
+
+The variable {{random-f64vector}} is a {{procedure}}:
+{{(random-source-make-f64vectors default-random-source)}}
+
+==== current-entropy-source
+
+<procedure>(current-entropy-source [ENTROPY-SOURCE])</procedure>
+
+Parameter for the default {{entropy-source}}.
+
+{{default-entropy-source}} is the initial {{(current-entropy-source)}}.
+
+The initial {{entropy-source}} is an instance of {{'system-clock}}.
+
+==== registered-entropy-sources
+
+<procedure>(registered-entropy-sources) -> (list-of symbol)</procedure>
+
+Returns a {{list}} of the registered {{entropy-source}} names.
+
+==== registered-entropy-source
+
+<procedure>(registered-entropy-source NAME) -> (or boolean procedure)</procedure>
+
+Returns the {{entropy-source}} creator for the specified {{NAME}} or {{#f}} if not
+registered.
+
+==== entropy-source?
+
+<procedure>(entropy-source? OBJ) -> boolean</procedure>
+
+{{entropy-source}} predicate.
+
+<procedure>(check-entropy-source LOC OBJ [NAM])</procedure>
+
+Raise error when {{OBJ}} not an {{entropy-source}}. {{NAM}} is the optional
+parameter name.
+
+<procedure>(error-entropy-source LOC OBJ [NAM])</procedure>
+
+Raise error for {{OBJ}} not an {{entropy-source}}. {{NAM}} is the optional
+parameter name.
+
+==== make-entropy-source
+
+<procedure>(make-entropy-source [SOURCE (current-entropy-source)]) -> entropy-source</procedure>
+
+{{SOURCE}} is either a {{entropy-source}} or the {{symbol}} of a registered
+{{entropy-source}}, the name.
+
+==== new-entropy-source
+
+<procedure>(new-entropy-source ENTROPY-SOURCE) -> entropy-source</procedure>
+
+Same as {{(make-random-entropy ENTROPY-SOURCE)}}.
+
+==== entropy-source-name
+
+<procedure>(entropy-source-name ENTROPY-SOURCE) -> symbol</procedure>
+
+The symbolic name of the {{ENTROPY-SOURCE}}.
+
+==== entropy-source-documentation
+
+<procedure>(entropy-source-documentation ENTROPY-SOURCE) -> string</procedure>
+
+Some more information for the {{ENTROPY-SOURCE}}.
+
+==== entropy-source-u8
+
+<procedure>(entropy-source-u8 ENTROPY-SOURCE) -> fixnum</procedure>
+
+Returns a non-negative {{fixnum}} from the {{ENTROPY-SOURCE}}.
+
+==== entropy-source-f64
+
+<procedure>(entropy-source-f64 ENTROPY-SOURCE) -> flonum</procedure>
+
+Returns a {{flonum}} from the {{ENTROPY-SOURCE}}.
+
+==== entropy-source-u8vector
+
+<procedure>(entropy-source-u8vector ENTROPY-SOURCE LENGTH [U8VECTOR]) -> u8vector</procedure>
+
+Returns a {{u8vector}} with the 0 thru {{LENGTH-1}} elements filled with non-negative
+{{fixnum}}s from the {{ENTROPY-SOURCE}}. If {{U8VECTOR}} is supplied then this
+is used otherwise a new vector is returned.
+
+==== entropy-source-f64vector
+
+<procedure>(entropy-source-f64vector ENTROPY-SOURCE LENGTH [F64VECTOR]) -> f64vector</procedure>
+
+Returns a {{f64vector}} with the 0 thru {{LENGTH-1}} elements filled with
+{{flonum}}s from the {{ENTROPY-SOURCE}}. If {{F64VECTOR}} is supplied then this
+is used otherwise a new vector is returned.
+
+==== entropy-source-integer
+
+<procedure>(entropy-source-integer ENTROPY-SOURCE) -> integer</procedure>
+
+Returns an {{integer}} from the {{ENTROPY-SOURCE}}.
+
+
+=== Random Sources
+
+A random source module must be loaded before it can be used. This maybe obvious
+but a call of {{(make-random-source 'moa)}} will fail unless the extension
+"moa" is loaded.
+
+See {{make-random-source}} for use of the {{NAME}}.
+
+==== Pierre L'Ecuyer's Multiple Recursive Generator 32k3a random number generator
+
+===== Usage
+
+<enscript language=scheme>
+(use mrg32k3a)
+</enscript>
+
+===== make-random-source-mrg32k3a
+
+<procedure>(make-random-source-mrg32k3a) -> random-source</procedure>
+
+Registered {{NAME}} is {{'mrg32k3a}}
+
+==== George Marsaglia's Multiply With Carry random number generator
+
+===== Usage
+
+<enscript language=scheme>
+(use mwc)
+</enscript>
+
+===== make-random-source-mwc
+
+<procedure>(make-random-source-mwc) -> random-source</procedure>
+
+Registered {{NAME}} is {{'mwc}}
+
+==== George Marsaglia's Mother Of All random number generator
+
+===== Usage
+
+<enscript language=scheme>
+(use moa)
+</enscript>
+
+===== make-random-source-moa
+
+<procedure>(make-random-source-moa) -> random-source</procedure>
+
+Registered {{NAME}} is {{'moa}}
+
+
+=== Entropy Sources
+
+An entropy source module must be loaded before it can be used.
+
+==== System Clock
+
+===== Usage
+
+<enscript language=scheme>
+(use entropy-clock)
+</enscript>
+
+===== make-entropy-source-system-clock
+
+<procedure>(make-entropy-source-system-clock) -> entropy-source</procedure>
+
+Registered {{NAME}} is {{'system-clock}}
+
+==== Windows Crypt Device
+
+===== Usage
+
+<enscript language=scheme>
+(use entropy-windows)
+</enscript>
+
+===== make-entropy-source-crypt
+
+<procedure>(make-entropy-source-crypt [BUFFER-LENGTH]) -> entropy-source</procedure>
+
+Registered {{NAME}} is {{'crypt}}
+
+==== Unix Random Device
+
+===== Usage
+
+<enscript language=scheme>
+(use entropy-unix)
+</enscript>
+
+===== make-entropy-source-urandom-device
+
+<procedure>(make-entropy-source-urandom-device) -> entropy-source</procedure>
+
+Registered {{NAME}} is {{'random-device}}
+
+===== make-entropy-source-random-device
+
+<procedure>(make-entropy-source-random-device) -> entropy-source</procedure>
+
+Registered {{NAME}} is {{'urandom-device}}
+
+
+=== Procedure Entropy Source
+
+{{U8PROC}} is a procedure of no arguments returning a {{fixnum}} in the range
+{{0 .. 255}}.
+
+{{F64PROC}} is a procedure of no arguments returning a finite {{flonum}}.
+
+==== Usage
+
+<enscript language=scheme>
+(use entropy-procedure)
+</enscript>
+
+==== make-entropy-source/procedures
+
+<procedure>(make-entropy-source/procedures U8PROC F64PROC [name: (NAME (gensym 'procedures-))] [docu: (DOCU "Entropy from procedures")]) -> entropy-source</procedure>
+
+Returns an unregistered {{entropy-source}} built from the supplied {{U8PROC}}
+and {{F64PROC}} procedures.
+
+==== make-entropy-source/f64procedure
+
+<procedure>(make-entropy-source/f64procedure F64PROC [name: (NAME (gensym 'procedures-))] [docu: (DOCU "Entropy from procedures")]) -> entropy-source</procedure>
+
+Returns an unregistered {{entropy-source}} built from the supplied {{F64PROC}}
+procedure.
+
+
+=== Port Entropy Source
+
+==== Usage
+
+<enscript language=scheme>
+(use entropy-port)
+</enscript>
+
+==== entropy-port-lifetime
+
+<parameter>(entropy-port-lifetime [SECONDS])</parameter>
+
+The number of {{SECONDS}} an entropy port is kept open without any activity.
+
+{{SECONDS}} is a {{positive real}} or a {{boolean}}: {{#t}}, to reset the default
+seconds, or {{#f}}, to determine the lifetime by GC finalization.
+
+==== make-entropy-source/port
+
+<procedure>(make-entropy-source/port PORT [name: (NAME (gensym 'port-))] [docu: (DOCU "Entropy from an open port")]) -> entropy-source</procedure>
+
+Returns an unregistered {{entropy-source}} built from the supplied {{PORT}},
+which is treated as a binary stream.
+
+The {{PORT}} is kept open and must be closed by the caller, if at all.
+
+==== make-entropy-source/port-open
+
+<procedure>(make-entropy-source/port-open OPENER [name: (NAME (gensym 'port-))] [docu: (DOCU "Entropy from port")]) -> entropy-source</procedure>
+
+Returns an unregistered {{entropy-source}} built from the supplied {{OPENER}}.
+
+{{OPENER}} is a {{(procedure () port)}}, returning an opened {{port}}.
+
+The returned {{port}} has an {{(entropy-port-lifetime)}} so the {{port}} may be
+closed and {{OPENER}} called more than once.
+
+==== make-entropy-source/port-open-timed
+
+<procedure>(make-entropy-source/port-open-timed OPENER SECONDS [name: (NAME (gensym 'timed-port-))] [docu: (DOCU "Entropy from timed open port")]) -> entropy-source</procedure>
+
+Returns an unregistered {{entropy-source}} built from the supplied {{OPENER}} &
+{{SECONDS}}.
+
+{{SECONDS}} is interpreted as with {{entropy-port-lifetime}}.
+
+{{OPENER}} is interpreted as with {{make-entropy-source/port-open}}.
+
+==== make-entropy-source/file
+
+<procedure>(make-entropy-source/file NAMSTR [name: (NAME (gensym 'file-))] [docu: (DOCU (string-append "Entropy from file \"" namstr "\""))]) -> entropy-source</procedure>
+
+Returns an unregistered {{entropy-source}} using the file named by the pathname
+{{NAMSTR}}.
+
+The opened {{port}} for the file {{NAMSTR}} is interpreted as with
+{{make-entropy-source/port-open}}.
+
+
+=== Simple Distributions
+
+Provides exact and inexact generators. All return 2 values: the generator
+itself and a procedure returning the argument values used to parameterize the
+generator. The second return value can be ignored.
+
+==== Usage
+
+<enscript language=scheme>
+(use srfi-27-uniform-random)
+</enscript>
+
+==== make-uniform-random-integers
+
+<procedure>(make-uniform-random-integers [high: (HIGH #f)] [low: (LOW 0)] [precision: (PRECISION 1)] [source: (SOURCE (current-random-source))]) -> (procedure () integer)</procedure>
+
+{{LOW}}, {{HIGH}} and {{PRECISION}} are {{integer}}s.
+
+{{SOURCE}} is a {{random-source}}.
+
+{{HIGH}}, if not supplied, is the {{(- (random-source-maximum-range source) 1)}}.
+
+The generator returns integers in the range {{LOW .. HIGH}} with an index of
+{{PRECISION}}. Unlike a {{(random-integer)}} result negative integers are
+possible.
+
+{{(random-integer/current)}} <> {{(make-uniform-random-integers)}}.
+{{(random-integer/current)}} returns {{((integer) -> integer)}}.
+{{(make-uniform-random-integers)}} returns {{(() -> integer)}}.
+
+==== make-uniform-random-reals
+
+<procedure>(make-uniform-random-reals [precision: PRECISION] [source: (SOURCE (current-random-source))]) -> (procedure () real)</procedure>
+
+The generator is as {{(random-source-make-reals SOURCE PRECISION)}}.
+
+{{PRECISION}} maybe {{#f}}, in which case the value is {{flonum-epsilon}}.
+
+{{SOURCE}} is a {{random-source}}.
+
+{{(random-real/current)}} = {{(make-uniform-random-reals)}}. Both return
+procedures of {{(() -> real)}}.
+
+=== Vector Distributions
+
+The procedures named as per {{make-random-...}} return a {{procedure}} of one
+argument {{N}}, the length of the vector to be created.
+
+The nomenclature {{vector%}} is used to indicate a disjoint type union of
+{{vector, f32vector, f64vector}}. If the user is really keen to access the API
+for this type it is available in the, undocumented, "srfi-27-vector-support"
+module.
+
+==== Usage
+
+<enscript language=scheme>
+(use srfi-27-vector)
+</enscript>
+
+==== make-random-permutations
+==== random-permutation!
+
+<procedure>(make-random-permutations [randoms: (RANDOMS random-integer/current)]) -> (procedure (integer) vector)</procedure>
+<procedure>(random-permutation! VECTOR [randoms: (RANDOMS random-integer/current)]) -> vector</procedure>
+
+Performs the "Knuth shuffle" (or "Fisher-Yates shuffle").
+
+Fills {{VECTOR}} with a random permutation of the finite set {0 ... {{N}}-1}, where
+{{N}} = {{(vector-length VECTOR)}}.
+
+{{RANDOMS}} is a {{procedure}}: {{(exact-real) -> exact-real}}
+
+(From Gambit)
+
+==== make-random-vector
+==== random-vector!
+
+<procedure>(make-random-vector [randoms: (RANDOMS random-real/current)]) -> (procedure (integer) vector)</procedure>
+<procedure>(random-vector! VECTOR% [randoms: (RANDOMS random-real/current)]) -> vector%</procedure>
+
+Fills {{VECTOR}} with inexact real random numbers from the random distribution
+generator {{randoms}}.
+
+{{RANDOMS}} is a {{procedure}}: {{() -> inexact-real}}
+
+==== make-random-hollow-sphere
+==== random-hollow-sphere!
+
+<procedure>(make-random-hollow-sphere [mu: (MU 0.0)] [sigma: (SIGMA 1.0)] [randoms: (RANDOMS (random-real/current))]) -> (procedure (integer) vector)</procedure>
+<procedure>(random-hollow-sphere! VECTOR% [mu: (MU 0.0)] [sigma: (SIGMA 1.0)] [randoms: (RANDOMS (random-real/current))]) -> vector%</procedure>
+
+Fills {{VECTOR%}} with inexact real random numbers the sum of whose squares
+are equal to {{1.0}}.
+
+Thinking of {{VECTOR%}} as coordinates in space of dimension {{N}} =
+{{(vector%-length VECTOR%)}}, the coordinates are uniformly distributed over
+the surface of the unit n-sphere.
+
+(From Gambit)
+
+==== make-random-solid-sphere
+==== random-solid-sphere!
+
+<procedure>(make-random-solid-sphere [mu: (MU 0.0)] [sigma: (SIGMA 1.0)] [randoms: (RANDOMS (random-real/current))]) -> (procedure (integer) vector)</procedure>
+<procedure>(random-solid-sphere! VECTOR% [mu: (MU 0.0)] [sigma: (SIGMA 1.0)] [randoms: (RANDOMS (random-real/current))]) -> vector%</procedure>
+
+Fills {{VECTOR%}} with inexact real random numbers the sum of whose squares
+are less than {{1.0}}.
+
+Thinking of {{VECTOR%}} as coordinates in space of dimension {{N}} =
+{{(vector%-length VECTOR%)}}, the coordinates are uniformly distributed within
+the unit n-sphere.
+
+(From Gambit)
+
+
+=== Other Distributions
+
+Provides generators for some common distributions ranging over some subset of
+the inexact-reals. The domain of the generators depends, of course, on the
+specific distribution.
+
+All return 2 values: the generator itself and a procedure returning the
+argument values used to parameterize the generator. The second return value can
+be ignored.
+
+The identifiers matching {{*make-random-<distribution>}} are reserved.
+
+==== Usage
+
+<enscript language=scheme>
+(use srfi-27-distributions)
+</enscript>
+
+All distributions are available from the omnibus module
+{{srfi-27-distributions}}, and individually as the {{srfi-27-<distribution>}}
+module.
+
+==== make-random-normals
+
+<procedure>(make-random-normals [mu: (MU 0.0)] [sigma: (SIGMA 1.0)] [randoms: (RANDOMS (random-real/current))]) -> (procedure () real)</procedure>
+
+{{MU}} is {{real}}.
+
+{{SIGMA}} is {{nonzero-real}}.
+
+{{RANDOMS}} is a {{(procedure () real)}}
+
+<enscript language=scheme>
+(use srfi-27-normals)
+</enscript>
+
+==== make-random-exponentials
+
+<procedure>(make-random-exponentials [mu: (MU 1.0)] [randoms: (RANDOMS (random-real/current))]) -> (procedure () real)</procedure>
+
+{{MU}} is {{real}} in [{{0}} {{1}}].
+
+{{RANDOMS}} is a {{(procedure () real)}}
+
+<enscript language=scheme>
+(use srfi-27-exponentials)
+</enscript>
+
+==== make-random-triangles
+
+<procedure>(make-random-triangles [s: (S 0.0)] [m: (M 0.5)] [l: (L 1.0)] [randoms: (RANDOMS (random-real/current))]) -> (procedure () real)</procedure>
+
+{{S}} is {{real}}.
+
+{{M}} is {{real}} in [{{S}} {{L}}].
+
+{{L}} is {{real}} in ]{{S}} {{+inf.0}}[.
+
+{{RANDOMS}} is a {{(procedure () real)}}
+
+<enscript language=scheme>
+(use srfi-27-triangles)
+</enscript>
+
+==== make-random-poissons
+
+<procedure>(make-random-poissons [mu: (MU 1.0)] [randoms: (RANDOMS (random-real/current))]) -> (procedure () integer)</procedure>
+
+{{MU}} is {{nonnegative-real}}.
+
+{{RANDOMS}} is a {{(procedure () real)}}
+
+<enscript language=scheme>
+(use srfi-27-poissons)
+</enscript>
+
+==== make-random-bernoullis
+
+<procedure>(make-random-bernoullis [p: (P 0.5)] [randoms: (RANDOMS (random-real/current))]) -> (procedure () boolean)</procedure>
+
+{{P}} is {{real}} in [{{0}} {{1}}].
+
+{{RANDOMS}} is a {{(procedure () real)}}
+
+<enscript language=scheme>
+(use srfi-27-bernoullis)
+</enscript>
+
+==== make-random-binomials
+
+<procedure>(make-random-binomials [t: (T 1)] [p: (P 0.5)] [randoms: (RANDOMS (random-real/current))]) -> (procedure () integer)</procedure>
+
+{{T}} is {{cardinal-integer}}.
+
+{{P}} is {{real}} in [{{0}} {{1}}].
+
+{{RANDOMS}} is a {{(procedure () real)}}
+
+<enscript language=scheme>
+(use srfi-27-binomials)
+</enscript>
+
+==== make-random-geometrics
+
+<procedure>(make-random-geometrics [p: (P 0.5)] [randoms: (RANDOMS (random-real/current))])) -> (procedure () integer)</procedure>
+
+{{P}} is {{real}} in [{{0}} {{1}}].
+
+{{RANDOMS}} is a {{(procedure () real)}}
+
+<enscript language=scheme>
+(use srfi-27-geometrics)
+</enscript>
+
+==== make-random-lognormals
+
+<procedure>(make-random-lognormals [mu: (MU 1.0)] [sigma: (SIGMA 1.0)] [randoms: (RANDOMS (random-real/current))]) -> (procedure () real)</procedure>
+
+{{MU}} is {{nonzero-real}}.
+
+{{SIGMA}} is {{nonnegative-real}}.
+
+{{RANDOMS}} is a {{(procedure () real)}}
+
+<enscript language=scheme>
+(use srfi-27-lognormals)
+</enscript>
+
+==== make-random-cauchys
+
+<procedure>(make-random-cauchys [median: (MEDIAN 0.0)] [sigma: (SIGMA 1.0)] [randoms: (RANDOMS (random-real/current))]) -> (procedure () real)</procedure>
+
+{{MEDIAN}} is {{real}}.
+
+{{SIGMA}} is {{positive-real}}.
+
+{{RANDOMS}} is a {{(procedure () real)}}
+
+<enscript language=scheme>
+(use srfi-27-cauchys)
+</enscript>
+
+==== make-random-gammas
+
+<procedure>(make-random-gammas [alpha: (ALPHA 1.0)] [theta: (THETA 1.0)] [randoms: (RANDOMS (random-real/current))]) -> (procedure () real)</procedure>
+
+{{ALPHA}} is {{positive-real}}.
+
+{{THETA}} is {{positive-real}}.
+
+{{RANDOMS}} is a {{(procedure () real)}}
+
+<enscript language=scheme>
+(use srfi-27-gammas)
+</enscript>
+
+==== make-random-erlangs
+
+<procedure>(make-random-erlangs [alpha: (ALPHA 1)] [theta: (THETA 1.0)] [randoms: (RANDOMS (random-real/current))]) -> (procedure () real)</procedure>
+
+{{ALPHA}} is {{positive-real}}.
+
+{{THETA}} is {{positive-real}}.
+
+{{RANDOMS}} is a {{(procedure () real)}}
+
+<enscript language=scheme>
+(use srfi-27-erlangs)
+</enscript>
+
+==== make-random-paretos
+
+<procedure>(make-random-paretos [alpha: (ALPHA 1.0)] [xmin: (XMIN 1.0)] [randoms: (RANDOMS (random-real/current))]) -> (procedure () real)</procedure>
+
+{{ALPHA}} is {{positive-real}}.
+
+{{XMIN}} is {{positive-real}}.
+
+{{RANDOMS}} is a {{(procedure () real)}}
+
+<enscript language=scheme>
+(use srfi-27-paretos)
+</enscript>
+
+==== make-random-levys
+
+<procedure>(make-random-levys [gamma: (GAMMA 1.0)] [delta: (DELTA 0.0)] [randoms: (RANDOMS (random-real/current))]) -> (procedure () real)</procedure>
+
+{{GAMMA}} is {{nonnegative-real}}.
+
+{{DELTA}} is {{positive-real}}.
+
+{{RANDOMS}} is a {{(procedure () real)}}
+
+<enscript language=scheme>
+(use srfi-27-levys)
+</enscript>
+
+==== make-random-weibulls
+
+<procedure>(make-random-weibulls [shape: (SHAPE 1.0)] [scale: (SCALE 1.0)] [randoms: (RANDOMS (random-real/current))]) -> (procedure () real)</procedure>
+
+{{SHAPE}} is {{positive-real}}.
+
+{{SCALE}} is {{positive-real}}.
+
+{{RANDOMS}} is a {{(procedure () real)}}
+
+<enscript language=scheme>
+(use srfi-27-weibulls)
+</enscript>
+
+
+== Examples
+
+* A procedure for creating K-vector (whatever that is) generators. The use of
+George Marsaglia's Multiply With Carry {{random-source}} and the "/dev/random"
+{{entropy-source}} are for exposition only.
+
+<enscript language=scheme>
+(use
+  entropy-unix entropy-port
+  mwc
+  srfi-27 srfi-27-uniform-random srfi-27-vector)
+
+(define (make-random-k-vector #!optional (k 1024) (rs (make-random-source 'mwc)) es)
+  (let (
+    (new-es
+      (or
+        es
+        ;don't keep open port around too much
+        (parameterize ((entropy-port-lifetime 30))
+          (make-entropy-source-random-device))))
+    (old-es
+      (random-source-entropy-source rs)) )
+    (dynamic-wind
+      (lambda ()
+        (random-source-entropy-source-set! rs new-es) )
+      (lambda ()
+        (let* (
+          (rnd (make-uniform-random-integers low: (- k) high: (+ k) precision: 2 source: rs))
+          (vecgen (make-random-vector randoms: rnd)) )
+          (lambda (#!optional (k k)) (vecgen k)) ) )
+      (lambda ()
+        (random-source-entropy-source-set! rs old-es) ) ) ) )
+</enscript>
+
+* Providing a fixed entropy-source, a constant seed.
+
+<enscript language=scheme>
+(use data-structures entropy-procedure)
+
+(define (make-entropy-constant n)
+  (make-entropy-source/f64procedure
+    (constantly (exact->inexact n))
+    name: (string->uninterned-symbol (conc "entropy-constant-" n))
+    docu: (conc "Entropy constant " n)) )
+</enscript>
+
+* A silly OO version of a random distribution generator
+
+<enscript language=scheme>
+(use srfi-1 srfi-13)
+(use coops)
+(use srfi-27-normals srfi-27-exponentials)
+
+;; Named (has a name) "concept"
+(define-generic (name obj))
+(define-class <named> () (
+  (namsym reader: name) ) )
+
+;; Parameterized extension "concept"
+(define-class <parameterized> () (ctor params src))
+
+;; Moves forward thru a set of values "concept"
+(define-generic (next-value obj))
+(define-class <stepper> () (nxtval))
+(define-method (next-value (obj <stepper>))
+  ((slot-value obj 'nxtval)))
+(define-generic (reset obj))
+(define-method (reset (obj <stepper>))
+  (let-values (
+    ((gen _)
+      (apply
+        (slot-value obj 'ctor)
+        `(,@(slot-value obj 'params) ,(slot-value obj 'src)))) )
+    (set! (slot-value obj 'nxtval) gen) ) )
+
+;; Parameterized generative set of random values "concept"
+(define-class <random-distribution> (<named> <parameterized> <stepper>) (
+  ;holds any value, temporarily
+  tmpval ) )
+
+;; Create an instance of <random-distribution> where the arguments are
+;; the same as the documented procedural distribution API.
+;;
+;; SRFI 27 API: ({some distribution constructor} arg...)
+;;      OO API: (make-random-distribution {some distribution constructor} arg...)
+(define-syntax make-random-distribution
+  (syntax-rules ()
+    ((_ ?ctor ?arg0 ...)
+      ;use tmpval to hold the ctor call form
+      (make <random-distribution> 'tmpval (list ?ctor ?arg0 ...)) ) ) )
+
+(define-method (initialize-instance (obj <random-distribution>))
+  ; The 'ctor' must be a globally defined procedure compiled with
+  ; procedure-information. So if following nomenclature then the last
+  ; procedure name element will be the kind of distribution:
+  ; make-random-<distribution>. And the <random-source> will be the
+  ; last argument.
+  ;
+  ; (I do not endorse this kind of "auto-magic". For example only.)
+  (let* (
+      (tmpval
+        (or
+          (slot-value obj 'tmpval)
+          `(,make-random-normals)))
+      (ctor
+        (car tmpval) )
+      (procinfo
+        (procedure-information ctor))
+      (procname
+        (and procinfo (pair? procinfo) (symbol->string (car procinfo))))
+      (procname
+        (and
+          procname
+          (and-let* ((kndpos (string-index-right procname #\-)))
+            (substring/shared procname (add1 kndpos)))))
+      (procname
+        (or procname "impossible"))
+      (dstr-vals
+        (receive (apply ctor (cdr tmpval))))
+      (params
+        (and
+          (<= 2 (length dstr-vals))
+          (receive ((second dstr-vals))))) )
+    ;"free" the temp slot
+    (set! (slot-value obj 'tmpval) #f)
+    ;initialize state
+    (set! (slot-value obj 'namsym) (string->symbol procname))
+    (set! (slot-value obj 'nxtval) (first dstr-vals))
+    (set! (slot-value obj 'ctor) ctor)
+    (set! (slot-value obj 'params) (and params (drop-right params 1)))
+    (set! (slot-value obj 'src) (and params (last params))) ) )
+
+;; Use it
+(use coops-extras)
+
+(define expn-rd (make-random-distribution make-random-exponentials mu: 0.5))
+(describe-object expn-rd)
+;coops instance of class `<random-distribution>':
+;tmpval: #f
+;namsym: exponentials
+;  ctor: #<procedure (srfi-27-exponentials#make-random-exponentials . tmp302303)>
+;params: (0.5)
+;   src: #<procedure>
+;nxtval: #<procedure (f_1191)>
+
+(next-value expn-rd) ;=> ...
+</enscript>
+
+
+== Notes
+
+* Due to the SRFI 27 requirement to generate numbers of any precision the
+"numbers" extension is always loaded. Be careful of creating a generator in a
+calling context where extended range is possible and consuming the results of
+the generator in a context without such range.
+
+* Portions by Sebastian Egner and Brad Lucier. (See the "book" SRFI 27
+implementation.)
+
+
+== Bugs and Limitations
+
+* Support for 64-bit platforms is poor. Need to provide core random integer
+generators which are defined over the 64-bit integer range. Currently 64-bit
+fixnum bounds are processed as if using a 32-bit platform. However, due to the
+bignum implementation, results in the 64-bit fixnum range are coerced to fixnum.
+
+* The random distribution API is poorly documented.
+
+* The implementation API is not documented. See the source distribution.
+
+* Use of an entropy-source as a random-source is impossible without the
+undocumented implementation API.
+
+
+== Requirements
+
+[[miscmacros]]
+[[numbers]]
+[[check-errors]]
+[[vector-lib]]
+[[timed-resource]]
+[[mathh]]
+
+[[setup-helper]]
+
+[[test]]
+
+
+== Author
+
+[[/users/kon-lovett|Kon Lovett]]
+
+
+== Version history
+
+; 3.4.1 : Fix for {{composite-entropy-source}}.
+; 3.4.0 : Added types.
+; 3.3.2 : Added types (except entropy & vector modules). {{entropy-source-random}} & {{entropy-source-urandom}} are timed-resources.
+; 3.3.1 : Remove unfinished entropy-linux module per #1434.
+; 3.3.0 : Added 14 distribution modules.
+; 3.2.11 : Include {{composite-random-source}} & {{composite-entropy-source}}, since tested.
+; 3.2.10 : Uses test egg now.
+; 3.2.9 : Fix {{make-random-bernoullis}}, add distributions test.
+; 3.2.8 : .
+; 3.2.7 : Fix {{entropy-source-system-clock}} {{entropy-source-u8}}.
+; 3.2.6 : Add {{random-integer/current}}, {{random-real/current}}. Doesn't use synch, thread-utils eggs. Fix {{make-uniform-random-integers}}.
+; 3.2.5 : Revert to own clock entropy implementation. Fix vector map/fill. Use EXTERNAL-ID for name.
+; 3.2.4 : Error when unregistered source.
+; 3.2.3 : Rename registration -> source-registration. Fix {{random-source-entropy-source-set!}}, must accept {{#f}} {{entropy-source}}. Fix broken srfi-27-vector.
+; 3.2.2 : more tests.
+; 3.2.1 : fp-extn module.
+; 3.2.0 : Include registration.scm.
+; 3.1.9 : registration module.
+; 3.1.8 : Fix for ticket #630.
+; 3.1.7 : Fix for unsigned integer from entropic f64.
+; 3.1.6 : Fix for {{composite-random-source}} missing argument.
+; 3.1.5 : Fix for {{mrg32k3a}} bad state values.
+; 3.1.4 : Fix for {{mrg32k3a-pack-state}} bad index.
+; 3.1.3 : Fix for 64-bit fixnums and random integers.
+; 3.1.2 : Fix for "entropy-windows" {{make-entropy-source-crypt}}.
+; 3.1.1 : Moved thread stuff to own extensions.
+; 3.1.0 : Changed all {{random-source-name}} to lowercase symbols. Changed {{random-state}} tags to same as {{random-source-name}}. Added {{new-(random|entropy)-source}}, {{@(random|entropy)-source-constructor}} & {{(random|entropy)-source-name}}. Exported {{registered-(random|entropy)-sources}} & {{registered-(random|entropy)-source}}.
+; 3.0.1 : Bug fix for bad external state symbol. Use of 64-bit arithmetic instead of double in C code.
+; 3.0.0 : Initial release for Chicken 4
+
+
+== License
+
+Copyright (C) 2010-2017 Kon Lovett. All rights reserved.
+
+Permission is hereby granted, free of charge, to any person obtaining a
+copy of this software and associated documentation files (the Software),
+to deal in the Software without restriction, including without limitation
+the rights to use, copy, modify, merge, publish, distribute, sublicense,
+and/or sell copies of the Software, and to permit persons to whom the
+Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included
+in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED ASIS, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
+THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR
+OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
+ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+OTHER DEALINGS IN THE SOFTWARE.
+
+Does not supercede any restrictions found in the source code.
