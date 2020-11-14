@@ -9,6 +9,7 @@
 (import scheme)
 (import (chicken base))
 (import (chicken foreign))
+(import (chicken type))
 
 (import entropy-source entropy-support)
 
