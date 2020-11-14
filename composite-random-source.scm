@@ -35,7 +35,8 @@ Experimental at best.
   composite-random-state?
   composite-state-ref composite-state-set!)
 
-(import scheme chicken)
+(import scheme)
+(import (chicken base))
 
 (use
   (only data-structures conc reverse-string-append ->string intersperse)
