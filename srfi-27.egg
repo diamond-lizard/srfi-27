@@ -48,7 +48,7 @@
       "-no-procedure-checks" "-no-argc-checks" "-no-bound-checks"))
   (extension entropy-clock
     (types-file)
-    (component-dependencies )
+    (component-dependencies entropy-support)
     (csc-options "-strict-types" "-O3" "-d0" "-no-procedure-checks-for-toplevel-bindings"))
   (extension entropy-procedure
     (types-file)
