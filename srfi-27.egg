@@ -120,7 +120,7 @@
   ;; Main Modules
   (extension srfi-27
     (types-file)
-    (component-dependencies srfi-27-numbers mrg32k3a)
+    (component-dependencies srfi-27-numbers mrg32k3a entropy-clock)
     (csc-options "-strict-types" "-O3" "-d0" "-no-procedure-checks-for-toplevel-bindings"))
   (extension srfi-27-uniform-random
     (types-file)
