@@ -3,7 +3,8 @@
 
 (module srfi-27-distributions ()
 
-(import scheme chicken)
+(import scheme)
+(import (chicken base))
 
 (reexport
   srfi-27-normals

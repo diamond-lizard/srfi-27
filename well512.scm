@@ -3,14 +3,18 @@
 
 (module well512
 
+(import scheme)
+(import (chicken base))
+
 (;export
   make-random-source-well512)
 
 (import (except scheme <= inexact->exact exact->inexact number?))
 
-(import chicken foreign)
+(import scheme)
+(import (chicken base))
+(import foreign)
 
-(import (only numbers <= inexact->exact exact->inexact number?))
 (import
   srfi-4
   random-source

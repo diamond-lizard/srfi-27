@@ -11,7 +11,8 @@
   *make-random-levys
   make-random-levys)
 
-(import scheme chicken)
+(import scheme)
+(import (chicken base))
 
 (import
   (only type-errors error-argument-type)

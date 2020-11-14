@@ -25,6 +25,8 @@
 (import
   scheme
   (chicken base)
+  (chicken type)
+  (chicken fixnum)
   (only srfi-4
     u8vector-length u8vector-ref u8vector-set!
     f32vector? f32vector-length f32vector-ref f32vector-set!

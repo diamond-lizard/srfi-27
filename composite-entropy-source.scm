@@ -32,10 +32,11 @@ Experimental at best.
   *composite-entropy-source-constructor
   composite-entropy-source-constructor)
 
-(import scheme chicken)
+(import scheme)
+(import (chicken base))
 
 (import
-  (only data-structures conc reverse-string-append ->string intersperse)
+  (only (chicken string) conc reverse-string-append ->string)
   (only type-errors error-argument-type)
   srfi-1
   srfi-4

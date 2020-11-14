@@ -9,12 +9,11 @@
   make-uniform-random-reals
   *make-uniform-random-integers)
 
-(import (except scheme + - * quotient = < abs))
-(import chicken)
+(import scheme)
+(import (chicken base))
 
-(import (only numbers + - * quotient = < abs))
 (import
-  data-structures
+  (chicken string)
   (only miscmacros exchange!)
   vector-lib
   (only srfi-27 current-random-source)

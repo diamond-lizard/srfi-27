@@ -22,10 +22,11 @@
   unregister-entropy-source
   register-entropy-source!)
 
-(import scheme chicken)
+(import scheme)
+(import (chicken base))
+(import (chicken type))
 
 (import
-  (only data-structures alist-ref alist-update!)
   (only srfi-1 alist-cons alist-delete!)
   (only type-checks define-check+error-type check-procedure check-symbol)
   source-registration)

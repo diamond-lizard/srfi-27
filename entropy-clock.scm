@@ -6,7 +6,9 @@
 (;export
   make-entropy-source-system-clock)
 
-(import scheme chicken foreign)
+(import scheme)
+(import (chicken base))
+(import foreign)
 
 (import entropy-source entropy-support)
 

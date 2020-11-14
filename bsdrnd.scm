@@ -10,18 +10,19 @@
 (;export
   make-random-source-bsd)
 
+(import scheme)
+(import (chicken base))
+
 (import (except scheme <= inexact->exact exact->inexact number?))
 
-(import chicken foreign)
+(import foreign)
 
 (import
-  (only numbers <= inexact->exact exact->inexact number?)
   (only srfi-27-numbers
     check-positive-integer
     random-large-integer random-large-real
     native-real-precision?))
 (require-library
-  numbers
   srfi-27-numbers)
 
 (import srfi-4)

@@ -31,7 +31,7 @@
 
 ;
 
-(import (srfi 1) (srfi 4) data-structures)
+(import (srfi 1) (srfi 4) (chicken string))
 
 ;
 

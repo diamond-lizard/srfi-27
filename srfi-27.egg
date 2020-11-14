@@ -8,6 +8,7 @@
  (license "BSD")
  (dependencies
 	check-errors
+        fp-utils
 	timed-resource
 	miscmacros
 	vector-lib
@@ -93,14 +94,14 @@
       "-no-procedure-checks" "-no-argc-checks" "-no-bound-checks"))
   (extension random-source
     (types-file)
-    (component-dependencies )
+    (component-dependencies source-registration)
     (csc-options "-strict-types"
       "-O3" "-d0"
       "-no-procedure-checks" "-no-argc-checks" "-no-bound-checks"))
   ;-c++ w/ crunch
   (extension mrg32k3a
     (types-file)
-    (component-dependencies )
+    (component-dependencies entropy-source)
     (csc-options "-strict-types"
       "-O3" "-d0"
       "-no-procedure-checks" "-no-argc-checks" "-no-bound-checks"))
@@ -119,7 +120,7 @@
   ;; Main Modules
   (extension srfi-27
     (types-file)
-    (component-dependencies )
+    (component-dependencies srfi-27-numbers mrg32k3a)
     (csc-options "-strict-types" "-O3" "-d0" "-no-procedure-checks-for-toplevel-bindings"))
   (extension srfi-27-uniform-random
     (types-file)
@@ -203,5 +204,5 @@
     (csc-options "-strict-types" "-O3" "-d0" "-no-procedure-checks-for-toplevel-bindings"))
   (extension composite-random-source
     (types-file)
-    (component-dependencies )
+    (component-dependencies random-source srfi-27-vector-support srfi-27)
     (csc-options "-strict-types" "-O3" "-d0" "-no-procedure-checks-for-toplevel-bindings")) ) )

@@ -6,12 +6,13 @@
 (;export
   make-random-source-mwc)
 
-(import (except scheme <= inexact->exact exact->inexact number?))
-(import chicken foreign)
+(import scheme)
+(import (chicken base))
+
+(import foreign)
 
 (import
   srfi-4
-  (only numbers <= inexact->exact exact->inexact number?)
   (only type-errors error-positive-integer)
   random-source
   entropy-source

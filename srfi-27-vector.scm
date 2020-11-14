@@ -17,7 +17,8 @@
   random-hollow-sphere!
   random-solid-sphere!)
 
-(import scheme chicken)
+(import scheme)
+(import (chicken base))
 
 (import
   (only type-checks check-cardinal-integer check-vector check-procedure)

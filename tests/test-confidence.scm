@@ -1,6 +1,7 @@
 ; Chicken
 
-(import numbers)
+(import scheme)
+(import (chicken base))
 (import srfi-27)
 (import random-source)
 (import mwc moa mrg32k3a #;bsdrnd)  ;load them all

@@ -11,10 +11,11 @@
   @source-registration-ref @source-registration-deref!
   @source-registration-register!)
 
-(import scheme chicken)
+(import scheme)
+(import (chicken base))
+(import (chicken type))
 
 (import
-  (only data-structures alist-ref alist-update!)
   (only srfi-1 alist-delete!)
   (only type-checks define-check+error-type check-procedure check-symbol check-list))
 

@@ -16,12 +16,12 @@
 (;export
   make-random-source-mrg32k3a)
 
-(import (except scheme <= inexact->exact exact->inexact number?))
-(import chicken foreign)
+(import scheme)
+(import (chicken base))
+; (import foreign)
 
 (import
   srfi-4
-  (only numbers <= inexact->exact exact->inexact number?)
   (only type-errors error-positive-integer)
   random-source
   entropy-source
@@ -35,9 +35,6 @@
 (declare
   (not usual-integrations
     <= inexact->exact exact->inexact))
-
-;*** DEBUG ***
-(import extras)
 
 #>
 #include <math.h>

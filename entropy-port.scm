@@ -11,7 +11,8 @@
   make-entropy-source/port-open make-entropy-source/port-open-timed
   make-entropy-source/file make-entropy-source/file-timed)
 
-(import scheme chicken)
+(import scheme)
+(import (chicken base))
 
 (import
   (only type-checks check-input-port check-procedure check-symbol check-string check-number)

@@ -6,12 +6,16 @@
 (;export
   make-random-source-moa)
 
+(import scheme)
+(import (chicken base))
+
 (import (except scheme <= inexact->exact exact->inexact number?))
-(import chicken foreign)
+(import scheme)
+(import (chicken base))
+(import foreign)
 
 (import
   srfi-4
-  (only numbers <= inexact->exact exact->inexact number?)
   random-source
   entropy-source
   (only srfi-27-numbers

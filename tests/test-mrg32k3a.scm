@@ -1,6 +1,7 @@
 ; Chicken
 
-(import numbers) ;For rndstate = rndstate since large integers used
+(import scheme)
+(import (chicken base))
 (import srfi-27 mrg32k3a)
 
 ;; Select platform specific entropy source

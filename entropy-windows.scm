@@ -6,7 +6,9 @@
 (;export
   make-entropy-source-crypt)
 
-(import scheme chicken foreign)
+(import scheme)
+(import (chicken base))
+(import foreign)
 
 (import
   (only ports make-input-port)

@@ -18,7 +18,8 @@
   ;
   *reciprocal *-reciprocal)
 
-(import scheme chicken)
+(import scheme)
+(import (chicken base))
 
 (import
   (only mathh-consts pi)

@@ -7,7 +7,8 @@
   make-entropy-source-random-device
   make-entropy-source-urandom-device)
 
-(import scheme chicken)
+(import scheme)
+(import (chicken base))
 
 (import entropy-source entropy-port)
 

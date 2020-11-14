@@ -7,7 +7,8 @@
   make-entropy-source/procedures
   make-entropy-source/f64procedure)
 
-(import scheme chicken)
+(import scheme)
+(import (chicken base))
 
 (import
   (only type-checks check-procedure check-symbol check-string)

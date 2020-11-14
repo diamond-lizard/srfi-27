@@ -39,10 +39,9 @@ Experimental at best.
 (import (chicken base))
 
 (import
-  (only data-structures conc reverse-string-append ->string intersperse)
+  (only (chicken string) conc reverse-string-append ->string)
   (only type-errors error-argument-type)
   srfi-1
-  numbers
   random-source
   srfi-27-vector-support
   srfi-27)

@@ -25,22 +25,11 @@
 ;NOTE that the module language is not Scheme so one cannot create a list of identifiers,
 ;respective of context, then use that list for import except or only, or declare.
 
-(import
-  (except scheme
-    <= < zero? positive? negative?
-    + * - / quotient expt
-    integer? real?
-    exact->inexact inexact->exact
-    floor))
-(import chicken)
+(import scheme)
+(import (chicken base))
+(import (chicken type))
+(import (chicken fixnum))
 
-(import
-  (only numbers
-    <= < zero? positive? negative?
-    + * - / quotient expt
-    integer? real?
-    exact->inexact inexact->exact
-    floor))
 (import
   (only type-checks
     define-check+error-type

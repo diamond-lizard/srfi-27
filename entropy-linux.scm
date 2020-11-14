@@ -6,7 +6,8 @@
 (;export
   make-entropy-source-getrandom)
 
-(import scheme chicken)
+(import scheme)
+(import (chicken base))
 
 (import entropy-source entropy-procedure)
 

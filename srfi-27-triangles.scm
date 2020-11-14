@@ -11,7 +11,8 @@
   *make-random-triangles
   make-random-triangles)
 
-(import scheme chicken)
+(import scheme)
+(import (chicken base))
 
 (import
   (only type-errors error-argument-type)
