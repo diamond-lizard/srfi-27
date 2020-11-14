@@ -11,31 +11,6 @@
 ;; within the 64bit fixnum range. But until u64vector available need to
 ;; use f64vectors makes any such gains very local.
 
-(module mrg32k3a
-
-(;export
-  make-random-source-mrg32k3a)
-
-(import scheme)
-(import (chicken base))
-; (import foreign)
-
-(import
-  srfi-4
-  (only type-errors error-positive-integer)
-  random-source
-  entropy-source
-  fp-utils
-  (only srfi-27-numbers
-    check-positive-integer
-    random-large-integer random-large-real
-    native-real-precision?)
-  #;crunch)
-
-(declare
-  (not usual-integrations
-    <= inexact->exact exact->inexact))
-
 #>
 #include <math.h>
 
@@ -78,27 +53,62 @@ static uint32_t
 mrg32k3a_random_integer( double *state, uint32_t range )
 {
   /* generate result in {0..range-1} using the rejection method */
-  if( range > M1 ) /* This shouldn't happen */
-    return mrg32k3a_random_m1( state );
-  else {
-    uint32_t q = M1 / range;
-    uint32_t qn = q * range; /* M1 modulo range */
-    uint32_t x;
-    for( x = mrg32k3a_random_m1( state ); x >= qn; x = mrg32k3a_random_m1( state ) );
-    return x / q;
-  }
+  uint32_t q = M1 / range;
+  uint32_t qn = q * range; /* M1 modulo range */
+  uint32_t x;
+  while( (x = mrg32k3a_random_m1( state )) >= qn );
+  return x / q;
 }
 
-/* normalization factor */
-#define NORM (1.0 / ((double) (M1 + 1)))
+#if 0
+/******
+overhead pretty much same as large-numbers module
+******/
+static uint64_t
+mrg32k3a_random_long( double *state, uint64_t range )
+{
+  /* generate result in {0..range-1} */
+  if( range <= (uint64_t) M1 )
+    return (uint64_t) mrg32k3a_random_integer( state, (uint32_t) range );
+
+# define LOG2(x)  ceill( log2l( (long double) (x) ) )
+# define POW2(x)  powl( 2.0, (long double) (x) )
+//# define LOG2(x)  ceil( log2( (double) (x) ) )
+//# define POW2(x)  pow( 2.0, (double) (x)  )
+
+  uint32_t log2 = LOG2( range );
+  int is_pow2 = range == POW2( log2 );
+  if( is_pow2 ) {
+    --range;
+    log2 = LOG2( range );
+  }
+  uint32_t prec = log2 / 2;
+  uint32_t lo_mask = ~(0xffffffff << prec);
+  uint32_t lo_range = range & lo_mask;
+  uint32_t hi_range = (range >> prec) & lo_mask;
+  uint64_t res = 0;
+  if( lo_range )
+    res = mrg32k3a_random_integer( state, lo_range );
+  if( hi_range )
+    res += ((uint64_t) mrg32k3a_random_integer( state, hi_range )) << prec;
+  if( is_pow2 ) ++res;
+  //return res & 0xffffffffffffff;
+  return res;
+
+# undef POW2
+# undef LOG2
+}
+#endif
 
 static double
 mrg32k3a_random_real( double *state )
 {
+  /* normalization factor */
+# define NORM (1.0 / ((double) (M1 + 1)))
   return NORM * (1.0 + mrg32k3a_random_m1( state ));
+# undef NORM
 }
 
-#undef NORM
 #undef A23N
 #undef A21
 #undef A13N
@@ -107,26 +117,53 @@ mrg32k3a_random_real( double *state )
 #undef M1
 <#
 
+(declare
+  (not usual-integrations
+    <= inexact->exact exact->inexact))
+
+(module mrg32k3a
+
+(;export
+  make-random-source-mrg32k3a)
+
+(import scheme)
+(import (chicken base))
+(import (chicken foreign))
+
+(import
+  srfi-4
+  (only type-errors error-positive-integer)
+  random-source
+  entropy-source
+  fp-utils
+  (only srfi-27-numbers
+    check-positive-integer
+    random-large-integer random-large-real
+    native-real-precision?)
+  #;crunch)
+
 ;;; fp stuff
 
 ;;;
 ;;; mrg32k3a specific
 ;;;
 
-(define mrg32k3a-random-integer (foreign-lambda unsigned-integer32 "mrg32k3a_random_integer" nonnull-f64vector unsigned-integer32))
 (define mrg32k3a-random-real (foreign-lambda double "mrg32k3a_random_real" nonnull-f64vector))
+(define mrg32k3a-random-integer (foreign-lambda unsigned-integer32 "mrg32k3a_random_integer" nonnull-f64vector unsigned-integer32))
+#; ;UNUSED
+(define mrg32k3a-random-long (foreign-lambda unsigned-integer64 "mrg32k3a_random_long" nonnull-f64vector unsigned-integer64))
 
 ;;;
 ;;; mrg32k3a generic
 ;;;
 
-(define-constant maximum-unsigned-integer32-flonum 4294967295.0)
-
 (cond-expand
   (64bit
-    (define-constant maximum-unsigned-integer32 4294967087) )    ;M1
+    (define-constant integer32-limit 4294967087) )    ;M1
   (else ;32bit
-    (define-constant maximum-unsigned-integer32 1073741823) ) )  ;32bit most-positive-fixnum
+    #; ;UNUSED
+    (define flonum-integer-limit (string->number "72057594037927936"))
+    (define-constant integer32-limit 1073741823) ) )  ;32bit most-positive-fixnum
 
 (define-constant fpM1 4294967087.0)   ;modulus of component 1
 (define-constant fpM1-1 4294967086.0) ;M1 - 1
@@ -328,86 +365,7 @@ mrg32k3a_random_real( double *state )
 ; available this is not necessary, but pseudo-randomize! is expected
 ; to be called only occasionally so we do not provide this implementation.
 
-#;
-(crunch
-  ;
-  (define (ring-lc a b i0 i1 i2 j0 j1 j2 m w-sqr) ;linear combination
-    (let ((fpW 65536.0)) ;wordsize to split {0..2^32-1}
-      (let (
-        (m::double m)
-        (w-sqr::double w-sqr)
-        (a0h (quotient (f64vector-ref a i0) fpW))
-        (a0l (modulo (f64vector-ref a i0) fpW))
-        (a1h (quotient (f64vector-ref a i1) fpW))
-        (a1l (modulo (f64vector-ref a i1) fpW))
-        (a2h (quotient (f64vector-ref a i2) fpW))
-        (a2l (modulo (f64vector-ref a i2) fpW))
-        (b0h (quotient (f64vector-ref b j0) fpW))
-        (b0l (modulo (f64vector-ref b j0) fpW))
-        (b1h (quotient (f64vector-ref b j1) fpW))
-        (b1l (modulo (f64vector-ref b j1) fpW))
-        (b2h (quotient (f64vector-ref b j2) fpW))
-        (b2l (modulo (f64vector-ref b j2) fpW)) )
-        (let (
-          (comb
-            (+
-              (+ (* (+ (* a0h b0h) (+ (* a1h b1h) (* a2h b2h))) w-sqr)
-                (* fpW
-                  (+ (* a0h b0l)
-                    (+ (* a0l b0h)
-                      (+ (* a1h b1l)
-                        (+ (* a1l b1h) (+ (* a2h b2l) (* a2l b2h))))))))
-              (+ (* a0l b0l) (+ (* a1l b1l) (* a2l b2l))))) )
-          ;
-          (modulo comb m) ) ) ) )
-#|
-Undefined symbols for architecture x86_64:
-  "vtable for __cxxabiv1::__class_type_info", referenced from:
-      typeinfo for crunch_buffer<double> in mrg32k3a.o
-  NOTE: a missing vtable usually means the first non-inline virtual member function has no definition.
-  "vtable for __cxxabiv1::__si_class_type_info", referenced from:
-      typeinfo for crunch_vector<double> in mrg32k3a.o
-  NOTE: a missing vtable usually means the first non-inline virtual member function has no definition.
-  "operator delete(void*)", referenced from:
-      crunch_vector<double>::~crunch_vector() in mrg32k3a.o
-      crunch_buffer<double>::~crunch_buffer() in mrg32k3a.o
-  "___gxx_personality_v0", referenced from:
-      f229(crunch_vector<double>, crunch_vector<double>, crunch_vector<double>) in mrg32k3a.o
-      stub829(long, long, long, long) in mrg32k3a.o
-      Dwarf Exception Unwind Info (__eh_frame) in mrg32k3a.o
-ld: symbol(s) not found for architecture x86_64
-clang: error: linker command failed with exit code 1 (import -v to see invocation)
-|#
-  #; ;
-  (define (ring-product! v a b) ;A*B in ((Z/m1*Z) x (Z/m2*Z))^(3x3)
-    (let (
-      (fpM1 4294967087.0)   ;modulus of component 1
-      (fpM2 4294944443.0)   ;modulus of component 2
-      (fpW-SQR1 209.0)
-      (fpW-SQR2 22853.0) )
-      ;
-      (f64vector-set! v 0 (ring-lc a b  0  1  2   0  3  6  fpM1 fpW-SQR1)) ;(A*B)_00 mod m1
-      (f64vector-set! v 1 (ring-lc a b  0  1  2   1  4  7  fpM1 fpW-SQR1)) ;(A*B)_01
-      (f64vector-set! v 2 (ring-lc a b  0  1  2   2  5  8  fpM1 fpW-SQR1))
-      (f64vector-set! v 3 (ring-lc a b  3  4  5   0  3  6  fpM1 fpW-SQR1)) ;(A*B)_10
-      (f64vector-set! v 4 (ring-lc a b  3  4  5   1  4  7  fpM1 fpW-SQR1))
-      (f64vector-set! v 5 (ring-lc a b  3  4  5   2  5  8  fpM1 fpW-SQR1))
-      (f64vector-set! v 6 (ring-lc a b  6  7  8   0  3  6  fpM1 fpW-SQR1))
-      (f64vector-set! v 7 (ring-lc a b  6  7  8   1  4  7  fpM1 fpW-SQR1))
-      (f64vector-set! v 8 (ring-lc a b  6  7  8   2  5  8  fpM1 fpW-SQR1))
-      (f64vector-set! v 9 (ring-lc a b  9 10 11   9 12 15  fpM2 fpW-SQR2)) ;(A*B)_00 mod m2
-      (f64vector-set! v 10 (ring-lc a b  9 10 11  10 13 16  fpM2 fpW-SQR2))
-      (f64vector-set! v 11 (ring-lc a b  9 10 11  11 14 17  fpM2 fpW-SQR2))
-      (f64vector-set! v 12 (ring-lc a b 12 13 14   9 12 15  fpM2 fpW-SQR2))
-      (f64vector-set! v 13 (ring-lc a b 12 13 14  10 13 16  fpM2 fpW-SQR2))
-      (f64vector-set! v 14 (ring-lc a b 12 13 14  11 14 17  fpM2 fpW-SQR2))
-      (f64vector-set! v 15 (ring-lc a b 15 16 17   9 12 15  fpM2 fpW-SQR2))
-      (f64vector-set! v 16 (ring-lc a b 15 16 17  10 13 16  fpM2 fpW-SQR2))
-      (f64vector-set! v 17 (ring-lc a b 15 16 17  11 14 17  fpM2 fpW-SQR2)) )
-      ;
-      (void) )
-)
-
+(define-constant fpW      65536.0) ;wordsize to split {0..2^32-1}
 (define-constant fpW-SQR1 209.0)   ;w^2 mod m1
 (define-constant fpW-SQR2 22853.0) ;w^2 mod m2
 
@@ -430,12 +388,28 @@ clang: error: linker command failed with exit code 1 (import -v to see invocatio
     (lambda (i j)
       ;
       (define (product a b) ;A*B in ((Z/m1*Z) x (Z/m2*Z))^(3x3)
-        ;Yes, I know at toplevel
-        (define-constant fpW      65536.0) ;wordsize to split {0..2^32-1}
-        (define-constant fpW-SQR1 209.0)   ;w^2 mod m1
-        (define-constant fpW-SQR2 22853.0) ;w^2 mod m2
         ;
         (define (lc i0 i1 i2 j0 j1 j2 m w-sqr) ;linear combination
+          (let ((a0h {a[i0] fpquotient fpW})
+                (a0l {a[i0] fpmodulo fpW})
+                (a1h {a[i1] fpquotient fpW})
+                (a1l {a[i1] fpmodulo fpW})
+                (a2h {a[i2] fpquotient fpW})
+                (a2l {a[i2] fpmodulo fpW})
+                (b0h {b[j0] fpquotient fpW})
+                (b0l {b[j0] fpmodulo fpW})
+                (b1h {b[j1] fpquotient fpW})
+                (b1l {b[j1] fpmodulo fpW})
+                (b2h {b[j2] fpquotient fpW})
+                (b2l {b[j2] fpmodulo fpW}) )
+            ;#{fp}{modulo m}
+            {{{{w-sqr fp* {{a0h fp* b0h} fp+ {a0h fp* b0h} fp+ {a2h fp* b2h}}}
+                  fp+
+                      {fpW fp*
+                           {{a0h fp* b0l} fp+ {a0l fp* b0h} fp+ {a1h fp* b1l} fp+ {a1l fp* b1h} fp+ {a2h fp* b2l} fp+ {a2l fp* b2h}}}}
+                fp+
+                    {{a0l fp* b0l} fp+ {a1l fp* b1l} fp+ {a2l fp* b2l}}}
+              fpmodulo m} )
           (let ((a0h (fpquotient  (f64vector-ref a i0) fpW))
                 (a0l (fpmodulo (f64vector-ref a i0) fpW))
                 (a1h (fpquotient  (f64vector-ref a i1) fpW))
@@ -448,20 +422,16 @@ clang: error: linker command failed with exit code 1 (import -v to see invocatio
                 (b1l (fpmodulo (f64vector-ref b j1) fpW))
                 (b2h (fpquotient  (f64vector-ref b j2) fpW))
                 (b2l (fpmodulo (f64vector-ref b j2) fpW)))
-            ;#{fp}{ modulo m}
+            ;#{fp}{modulo m}
             (fpmodulo
-              (fp+
-                (fp+ (fp* (fp+ (fp* a0h b0h)
-                                  (fp+ (fp* a1h b1h)
-                                       (fp* a2h b2h)))
-                             w-sqr)
-                        (fp* fpW
-                             (fp+ (fp* a0h b0l)
-                                  (fp+ (fp* a0l b0h)
-                                       (fp+ (fp* a1h b1l)
-                                            (fp+ (fp* a1l b1h)
-                                                 (fp+ (fp* a2h b2l) (fp* a2l b2h))))))))
-                   (fp+ (fp* a0l b0l) (fp+ (fp* a1l b1l) (fp* a2l b2l))))
+              (fp+  (fp+  (fp* w-sqr (fp+ (fp* a0h b0h) (fp+ (fp* a1h b1h) (fp* a2h b2h))))
+                          (fp* fpW
+                               (fp+ (fp* a0h b0l)
+                                    (fp+ (fp* a0l b0h)
+                                         (fp+ (fp* a1h b1l)
+                                              (fp+ (fp* a1l b1h)
+                                                   (fp+ (fp* a2h b2l) (fp* a2l b2h))))))))
+                    (fp+ (fp* a0l b0l) (fp+ (fp* a1l b1l) (fp* a2l b2l))))
               m) ) )
         ;
         (f64vector
@@ -594,17 +564,23 @@ clang: error: linker command failed with exit code 1 (import -v to see invocatio
           (cond-expand
             (64bit
               (cond
-                ((and (fixnum? n) (<= n maximum-unsigned-integer32))
+                ((and (fixnum? n) (<= n integer32-limit))
                   (mrg32k3a-random-integer state n))
+                #; ;UNUSED
+                ((and (fixnum? n) (<= n most-positive-fixnum))
+                  (mrg32k3a-random-long state n))
                 (else
                   (mrg32k3a-random-large state n) ) ) )
             (else ;32bit
               (cond
-                ((and (fixnum? n) (<= n maximum-unsigned-integer32))
+                ((and (fixnum? n) (<= n integer32-limit))
                   (mrg32k3a-random-integer state n))
                 ;'n' maybe bignum - must be convertable to "unsigned-integer32"
                 ((<= n eM1)
                   (mrg32k3a-random-integer state (exact->inexact n)))
+                #; ;UNUSED
+                ((<= n flonum-integer-limit)
+                  (mrg32k3a-random-long state (exact->inexact n)))
                 (else
                   (mrg32k3a-random-large state n) ) ) ) ) ) )
       ;
