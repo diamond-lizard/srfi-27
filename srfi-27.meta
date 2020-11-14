@@ -1,0 +1,53 @@
+;;;; srfi-27.meta  -*- Hen -*-
+
+((egg "srfi-27.egg")
+ (category data)
+ (author "Sebastian Egner, for Chicken by [[kon lovett]]")
+ (license "BSD")
+ (doc-from-wiki)
+ (synopsis "Sources of Random Bits")
+ (depends
+	(setup-helper "1.5.2")
+	(check-errors "1.9.0")
+	(timed-resource "1.0.1")
+	(miscmacros "2.8")
+	(vector-lib "1.2")
+	(numbers "2.8")
+	(mathh "3.2.0")
+  #;(dsssl-utils "2.1.0")
+	#;(random-bsd "0.2"))
+ (test-depends test)
+ (files
+  "srfi-27.setup" "srfi-27.meta"
+  "source-registration.scm"
+  "srfi-27-common-types.scm"
+  "srfi-27.scm"
+  "random-source.scm"
+  ;"bsdrnd.scm"
+  "composite-random-source.scm"
+  "mrg32k3a.scm" "mwc.scm" "moa.scm" "well512.scm"
+  "srfi-27-numbers.scm"
+  "entropy-source.scm"
+  "composite-entropy-source.scm"
+  "entropy-unix.scm" "entropy-linux.scm" "entropy-windows.scm"
+  "entropy-clock.scm" "entropy-procedure.scm" "entropy-port.scm"
+  "entropy-support.scm"
+  "srfi-27-uniform-random.scm"
+  "srfi-27-distributions.scm"
+  "srfi-27-bernoullis.scm"
+  "srfi-27-binomials.scm"
+  "srfi-27-cauchys.scm"
+  "srfi-27-erlangs.scm"
+  "srfi-27-exponentials.scm"
+  "srfi-27-gammas.scm"
+  "srfi-27-geometrics.scm"
+  "srfi-27-levys.scm"
+  "srfi-27-lognormals.scm"
+  "srfi-27-normals.scm"
+  "srfi-27-paretos.scm"
+  "srfi-27-poissons.scm"
+  "srfi-27-triangles.scm"
+  "srfi-27-weibulls.scm"
+  "srfi-27-vector.scm" "srfi-27-vector-support.scm"
+  "tests/run.scm" "tests/srfi-27-test.scm"
+  "tests/test-diehard.scm" "tests/test-confidence.scm" "tests/test-mrg32k3a.scm") )

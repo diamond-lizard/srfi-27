@@ -1,0 +1,150 @@
+;;;; srfi-27.setup  -*- Hen -*-
+
+(use setup-helper-mod)
+
+(verify-extension-name "srfi-27")
+
+;; Utility Modules
+
+(define UTILITY-OPTIONS '(
+  -scrutinize
+  -optimize-level 3 -debug-level 0
+  -no-procedure-checks -no-argc-checks -no-bound-checks))
+
+(define PUBLIC-OPTIONS '(
+  -scrutinize
+  -optimize-level 3 -debug-level 1
+  -no-procedure-checks-for-toplevel-bindings))
+
+(setup-shared-extension-module 'source-registration (extension-version "3.4.2")
+  #:inline? #t #:types? #t #:compile-options UTILITY-OPTIONS)
+
+(setup-shared-extension-module 'srfi-27-numbers (extension-version "3.4.2")
+  #:inline? #t #:types? #t #:compile-options UTILITY-OPTIONS)
+
+(setup-shared-extension-module 'srfi-27-vector-support (extension-version "3.4.2")
+  #:inline? #t #:types? #t #:compile-options UTILITY-OPTIONS)
+
+;; Entropy Source Modules
+
+(setup-shared-extension-module 'entropy-source (extension-version "3.4.2")
+  #:inline? #t #:types? #t #:compile-options UTILITY-OPTIONS)
+
+(setup-shared-extension-module 'entropy-support (extension-version "3.4.2")
+  #:inline? #t #:types? #t #:compile-options UTILITY-OPTIONS)
+
+(setup-shared-extension-module 'entropy-clock (extension-version "3.4.2")
+  #:inline? #t #:types? #t #:compile-options PUBLIC-OPTIONS)
+
+(setup-shared-extension-module 'entropy-procedure (extension-version "3.4.2")
+  #:inline? #t #:types? #t #:compile-options PUBLIC-OPTIONS)
+
+(setup-shared-extension-module 'entropy-port (extension-version "3.4.2")
+  #:inline? #t #:types? #t #:compile-options PUBLIC-OPTIONS)
+
+#+unix
+(setup-shared-extension-module 'entropy-unix (extension-version "3.4.2")
+  #:inline? #t #:types? #t #:compile-options PUBLIC-OPTIONS)
+
+#|
+#+linux
+(setup-shared-extension-module 'entropy-linux (extension-version "3.4.2")
+  #:inline? #t #:types? #t #:compile-options PUBLIC-OPTIONS)
+|#
+
+#+windows
+(setup-shared-extension-module 'entropy-windows (extension-version "3.4.2")
+  #:inline? #t #:types? #t #:compile-options PUBLIC-OPTIONS)
+
+;; Random Source Modules
+
+#; ;WIP
+(setup-shared-extension-module 'well512 (extension-version "3.4.2")
+  #:inline? #t #:types? #t #:compile-options UTILITY-OPTIONS)
+
+(setup-shared-extension-module 'random-source (extension-version "3.4.2")
+  #:inline? #t #:types? #t #:compile-options UTILITY-OPTIONS)
+
+;-c++ w/ crunch
+(setup-shared-extension-module 'mrg32k3a (extension-version "3.4.2")
+  #:inline? #t #:types? #t #:compile-options UTILITY-OPTIONS)
+
+(setup-shared-extension-module 'mwc (extension-version "3.4.2")
+  #:inline? #t #:types? #t #:compile-options UTILITY-OPTIONS)
+
+(setup-shared-extension-module 'moa (extension-version "3.4.2")
+  #:inline? #t #:types? #t #:compile-options UTILITY-OPTIONS)
+
+#;
+(setup-shared-extension-module 'bsdrnd (extension-version "3.4.2")
+  #:inline? #t #:types? #t #:compile-options UTILITY-OPTIONS)
+
+;; Main Modules
+
+(setup-shared-extension-module 'srfi-27 (extension-version "3.4.2")
+  #:inline? #t #:types? #t #:compile-options PUBLIC-OPTIONS)
+
+(setup-shared-extension-module 'srfi-27-uniform-random (extension-version "3.4.2")
+  #:inline? #t #:types? #t #:compile-options PUBLIC-OPTIONS)
+
+(setup-shared-extension-module 'srfi-27-distributions-support (extension-version "3.4.2")
+  #:inline? #t #:types? #t #:compile-options PUBLIC-OPTIONS)
+
+(setup-shared-extension-module 'srfi-27-bernoullis (extension-version "3.4.2")
+  #:inline? #t #:types? #t #:compile-options PUBLIC-OPTIONS)
+
+(setup-shared-extension-module 'srfi-27-binomials (extension-version "3.4.2")
+  #:inline? #t #:types? #t #:compile-options PUBLIC-OPTIONS)
+
+(setup-shared-extension-module 'srfi-27-cauchys (extension-version "3.4.2")
+  #:inline? #t #:types? #t #:compile-options PUBLIC-OPTIONS)
+
+(setup-shared-extension-module 'srfi-27-normals (extension-version "3.4.2")
+  #:inline? #t #:types? #t #:compile-options PUBLIC-OPTIONS)
+
+;needs normals
+(setup-shared-extension-module 'srfi-27-gammas (extension-version "3.4.2")
+  #:inline? #t #:types? #t #:compile-options PUBLIC-OPTIONS)
+
+;needs gammas
+(setup-shared-extension-module 'srfi-27-erlangs (extension-version "3.4.2")
+  #:inline? #t #:types? #t #:compile-options PUBLIC-OPTIONS)
+
+(setup-shared-extension-module 'srfi-27-exponentials (extension-version "3.4.2")
+  #:inline? #t #:types? #t #:compile-options PUBLIC-OPTIONS)
+
+(setup-shared-extension-module 'srfi-27-geometrics (extension-version "3.4.2")
+  #:inline? #t #:types? #t #:compile-options PUBLIC-OPTIONS)
+
+(setup-shared-extension-module 'srfi-27-levys (extension-version "3.4.2")
+  #:inline? #t #:types? #t #:compile-options PUBLIC-OPTIONS)
+
+(setup-shared-extension-module 'srfi-27-lognormals (extension-version "3.4.2")
+  #:inline? #t #:types? #t #:compile-options PUBLIC-OPTIONS)
+
+;needs gammas exponentials
+(setup-shared-extension-module 'srfi-27-paretos (extension-version "3.4.2")
+  #:inline? #t #:types? #t #:compile-options PUBLIC-OPTIONS)
+
+(setup-shared-extension-module 'srfi-27-poissons (extension-version "3.4.2")
+  #:inline? #t #:types? #t #:compile-options PUBLIC-OPTIONS)
+
+(setup-shared-extension-module 'srfi-27-triangles (extension-version "3.4.2")
+  #:inline? #t #:types? #t #:compile-options PUBLIC-OPTIONS)
+
+(setup-shared-extension-module 'srfi-27-weibulls (extension-version "3.4.2")
+  #:inline? #t #:types? #t #:compile-options PUBLIC-OPTIONS)
+
+(setup-shared-extension-module 'srfi-27-distributions (extension-version "3.4.2")
+  #:inline? #t #:types? #t #:compile-options PUBLIC-OPTIONS)
+
+(setup-shared-extension-module 'srfi-27-vector (extension-version "3.4.2")
+  #:inline? #t #:types? #t #:compile-options PUBLIC-OPTIONS)
+
+;; Composite Source Modules
+
+(setup-shared-extension-module 'composite-entropy-source (extension-version "3.4.2")
+  #:inline? #t #:types? #t #:compile-options PUBLIC-OPTIONS)
+
+(setup-shared-extension-module 'composite-random-source (extension-version "3.4.2")
+  #:inline? #t #:types? #t #:compile-options PUBLIC-OPTIONS)
