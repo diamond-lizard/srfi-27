@@ -37,6 +37,7 @@ Experimental at best.
 
 (import scheme)
 (import (chicken base))
+(import (chicken type))
 
 (import
   (only (chicken string) conc reverse-string-append ->string)
