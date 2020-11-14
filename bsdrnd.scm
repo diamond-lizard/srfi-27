@@ -15,7 +15,7 @@
 
 (import (except scheme <= inexact->exact exact->inexact number?))
 
-(import foreign)
+(import (chicken foreign))
 
 (import
   (only srfi-27-numbers

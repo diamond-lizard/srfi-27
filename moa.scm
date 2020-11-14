@@ -12,7 +12,7 @@
 (import (except scheme <= inexact->exact exact->inexact number?))
 (import scheme)
 (import (chicken base))
-(import foreign)
+(import (chicken foreign))
 
 (import
   srfi-4

@@ -8,7 +8,7 @@
 
 (import scheme)
 (import (chicken base))
-(import foreign)
+(import (chicken foreign))
 
 (import entropy-source entropy-support)
 
