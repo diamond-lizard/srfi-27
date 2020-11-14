@@ -139,6 +139,7 @@ mrg32k3a_random_real( double *state )
   random-source
   entropy-source
   fp-utils
+  fp-inlines
   (only srfi-27-numbers
     check-positive-integer
     random-large-integer random-large-real
