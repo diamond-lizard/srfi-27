@@ -54,6 +54,7 @@
   (chicken type)
   (only srfi-4 make-u8vector make-f64vector)
   (only miscmacros define-parameter)
+  (only type-checks-numbers check-natural-integer)
   (only type-errors error-argument-type warning-argument-type)
   (only srfi-27-numbers check-real-precision)
   (only srfi-27-vector-support u8vector-filled! f64vector-filled!)
