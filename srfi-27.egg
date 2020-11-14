@@ -3,7 +3,8 @@
 ((synopsis "Sources of Random Bits")
  (version "4.0.0")
  (category data)
- (author "Sebastian Egner, for CHICKEN by [[kon lovett]]")
+ (author "Sebastian Egner, for CHICKEN by [[kon lovett]] and [[Sergey Goldgaber]]")
+ (maintainer "Sergey Goldgaber")
  (license "BSD")
  (dependencies
 	check-errors
