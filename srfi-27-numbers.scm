@@ -6,7 +6,7 @@
 (;export
   ;
   check-integer
-  #;check-cardinal-integer
+  #;check-natural-integer
   check-positive-integer
   #;check-real
   #;check-nonzero-real

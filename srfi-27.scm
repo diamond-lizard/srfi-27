@@ -157,7 +157,7 @@
     (*rnd* ((@random-source-make-integers rs))) )
     (lambda (n)
       (u8vector-filled!
-        (make-u8vector (check-cardinal-integer 'random-source-make-u8vector n 'length))
+        (make-u8vector (check-natural-integer 'random-source-make-u8vector n 'length))
         (lambda () (*rnd* 256))) ) ) )
 
 (define (*random-source-make-f64vectors rs prec)
@@ -165,7 +165,7 @@
     (*rnd* ((@random-source-make-reals rs) prec)) )
     (lambda (n)
       (f64vector-filled!
-        (make-f64vector (check-cardinal-integer 'random-source-make-f64vector n 'length))
+        (make-f64vector (check-natural-integer 'random-source-make-f64vector n 'length))
         *rnd*) ) ) )
 
 ;;
@@ -306,8 +306,8 @@
 ;
 (define (random-source-pseudo-randomize! rs i j)
   ((@random-source-pseudo-randomize! (check-random-source 'random-source-pseudo-randomize! rs))
-    (check-cardinal-integer 'random-source-pseudo-randomize! i)
-    (check-cardinal-integer 'random-source-pseudo-randomize! j)) )
+    (check-natural-integer 'random-source-pseudo-randomize! i)
+    (check-natural-integer 'random-source-pseudo-randomize! j)) )
 
 (: random-source-make-integers (random-source --> random-integer-function))
 ;

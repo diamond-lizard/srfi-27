@@ -19,7 +19,7 @@
   (only type-checks
     define-check+error-type
     check-procedure
-    check-cardinal-integer
+    check-natural-integer
     check-real
     check-open-interval
     check-closed-interval)
@@ -51,7 +51,7 @@
 (: make-random-binomials (#!rest --> number-function procedure))
 ;
 (define (make-random-binomials #!key (t 1) (p 0.5) (randoms (current-random-real)))
-  (check-cardinal-integer 'make-random-binomials t 't)
+  (check-natural-integer 'make-random-binomials t 't)
   (check-real-unit 'make-random-binomials p 'p)
   (check-procedure 'make-random-binomials randoms 'randoms)
   (values

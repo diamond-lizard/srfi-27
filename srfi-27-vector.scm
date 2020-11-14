@@ -21,7 +21,7 @@
 (import (chicken base))
 
 (import
-  (only type-checks check-cardinal-integer check-vector check-procedure)
+  (only type-checks check-natural-integer check-vector check-procedure)
   (only type-errors error-vector)
   random-source
   srfi-27-distributions
@@ -75,7 +75,7 @@
   (lambda (n)
     (*random-permutation!
       (make-vector
-        (check-cardinal-integer 'make-random-permutations n 'length)
+        (check-natural-integer 'make-random-permutations n 'length)
         0)
       (check-procedure 'make-random-permutations randoms 'randoms))) )
 
@@ -94,7 +94,7 @@
   (lambda (n)
     (vector-filled!
       (make-vector
-        (check-cardinal-integer 'random-vector n 'length))
+        (check-natural-integer 'random-vector n 'length))
       (check-procedure 'make-random-vector randoms 'randoms))) )
 
 (: random-vector! (srfi-27-vector #!rest -> void))
@@ -130,7 +130,7 @@
     ((norms pl) (make-random-normals #:mu mu #:sigma sigma #:randoms randoms)) )
     (lambda (n)
       (**random-hollow-sphere!
-        (make-vector (check-cardinal-integer 'random-hollow-sphere n 'length))
+        (make-vector (check-natural-integer 'random-hollow-sphere n 'length))
         norms) ) ) )
 
 (: random-hollow-sphere! (srfi-27-vector #!rest -> void))
@@ -164,7 +164,7 @@
     ((norms pl) (make-random-normals #:mu mu #:sigma sigma #:randoms randoms)) )
     (lambda (n)
       (**random-solid-sphere!
-        (make-vector (check-cardinal-integer 'random-solid-sphere n 'length))
+        (make-vector (check-natural-integer 'random-solid-sphere n 'length))
         randoms norms) ) ) )
 
 (: random-solid-sphere! (srfi-27-vector #!rest -> void))

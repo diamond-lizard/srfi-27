@@ -19,7 +19,7 @@
   (only type-checks
     define-check+error-type
     check-procedure
-    check-cardinal-integer
+    check-natural-integer
     check-real
     check-open-interval
     check-closed-interval)
