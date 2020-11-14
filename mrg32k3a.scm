@@ -394,26 +394,6 @@ mrg32k3a_random_real( double *state )
       (define (product a b) ;A*B in ((Z/m1*Z) x (Z/m2*Z))^(3x3)
         ;
         (define (lc i0 i1 i2 j0 j1 j2 m w-sqr) ;linear combination
-          (let ((a0h {a[i0] fpquotient fpW})
-                (a0l {a[i0] fpmodulo fpW})
-                (a1h {a[i1] fpquotient fpW})
-                (a1l {a[i1] fpmodulo fpW})
-                (a2h {a[i2] fpquotient fpW})
-                (a2l {a[i2] fpmodulo fpW})
-                (b0h {b[j0] fpquotient fpW})
-                (b0l {b[j0] fpmodulo fpW})
-                (b1h {b[j1] fpquotient fpW})
-                (b1l {b[j1] fpmodulo fpW})
-                (b2h {b[j2] fpquotient fpW})
-                (b2l {b[j2] fpmodulo fpW}) )
-            ;#{fp}{modulo m}
-            {{{{w-sqr fp* {{a0h fp* b0h} fp+ {a0h fp* b0h} fp+ {a2h fp* b2h}}}
-                  fp+
-                      {fpW fp*
-                           {{a0h fp* b0l} fp+ {a0l fp* b0h} fp+ {a1h fp* b1l} fp+ {a1l fp* b1h} fp+ {a2h fp* b2l} fp+ {a2l fp* b2h}}}}
-                fp+
-                    {{a0l fp* b0l} fp+ {a1l fp* b1l} fp+ {a2l fp* b2l}}}
-              fpmodulo m} )
           (let ((a0h (fpquotient  (f64vector-ref a i0) fpW))
                 (a0l (fpmodulo (f64vector-ref a i0) fpW))
                 (a1h (fpquotient  (f64vector-ref a i1) fpW))
