@@ -9,6 +9,7 @@
 
 (import scheme)
 (import (chicken base))
+(import (chicken type))
 
 (import
   (only type-checks check-procedure check-symbol check-string)
