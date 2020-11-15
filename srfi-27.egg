@@ -67,6 +67,7 @@
           "-strict-types"
           "-O3" "-d0"
           "-no-procedure-checks-for-toplevel-bindings")) )
+#; ;FIXME not ready for prime, or any, time
     (linux
       (extension entropy-linux
         (types-file)
