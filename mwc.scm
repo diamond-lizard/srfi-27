@@ -10,6 +10,8 @@
 (import (chicken base))
 
 (import (chicken foreign))
+(import (chicken fixnum))
+(import (chicken flonum))
 
 (import
   srfi-4
