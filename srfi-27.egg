@@ -191,7 +191,7 @@
     (csc-options "-strict-types" "-O3" "-d0" "-no-procedure-checks-for-toplevel-bindings"))
   (extension srfi-27-distributions
     (types-file)
-    (component-dependencies )
+    (component-dependencies srfi-27-normals)
     (csc-options "-strict-types" "-O3" "-d0" "-no-procedure-checks-for-toplevel-bindings"))
   (extension srfi-27-vector
     (types-file)
