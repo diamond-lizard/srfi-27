@@ -13,6 +13,7 @@
 
 (import scheme)
 (import (chicken base))
+(import (chicken type))
 
 (import
   (only type-errors error-argument-type)
