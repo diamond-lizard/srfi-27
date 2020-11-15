@@ -14,6 +14,7 @@
 (import scheme)
 (import (chicken base))
 (import (chicken type))
+(import (chicken module))
 
 (import
   (only type-errors error-argument-type)
