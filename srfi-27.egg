@@ -132,7 +132,7 @@
     (csc-options "-strict-types" "-O3" "-d0" "-no-procedure-checks-for-toplevel-bindings"))
   (extension srfi-27-bernoullis
     (types-file)
-    (component-dependencies )
+    (component-dependencies srfi-27-distributions-support)
     (csc-options "-strict-types" "-O3" "-d0" "-no-procedure-checks-for-toplevel-bindings"))
   (extension srfi-27-binomials
     (types-file)
