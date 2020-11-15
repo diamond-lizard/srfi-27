@@ -70,7 +70,7 @@
     (linux
       (extension entropy-linux
         (types-file)
-        (component-dependencies )
+        (component-dependencies entropy-procedure)
         (csc-options
           "-strict-types"
           "-O3" "-d0"
