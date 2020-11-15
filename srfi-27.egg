@@ -154,7 +154,7 @@
   ;needs gammas
   (extension srfi-27-erlangs
     (types-file)
-    (component-dependencies )
+    (component-dependencies srfi-27-gammas)
     (csc-options "-strict-types" "-O3" "-d0" "-no-procedure-checks-for-toplevel-bindings"))
   (extension srfi-27-exponentials
     (types-file)
