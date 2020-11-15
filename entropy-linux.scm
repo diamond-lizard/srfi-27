@@ -47,7 +47,7 @@
   )
 
 (define (make-entropy-source-getrandom)
-  (make-entropy-source/procedure
+  (make-entropy-source/procedures
     getrandom_u8proc
     getrandom_f64proc
     "getrandom"
