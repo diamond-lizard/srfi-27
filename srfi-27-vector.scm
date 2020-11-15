@@ -20,6 +20,7 @@
 (import scheme)
 (import (chicken base))
 (import (chicken type))
+(import (chicken fixnum))
 
 (import
   (only type-checks check-natural-integer check-vector check-procedure)
