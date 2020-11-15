@@ -5,6 +5,7 @@
 
 (import scheme)
 (import (chicken base))
+(import (chicken module))
 
 (reexport
   srfi-27-normals
