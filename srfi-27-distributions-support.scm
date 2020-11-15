@@ -20,6 +20,8 @@
 
 (import scheme)
 (import (chicken base))
+(import (chicken fixnum))
+(import (chicken flonum))
 
 (import
   (only mathh-consts pi)
