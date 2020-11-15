@@ -1,32 +1,6 @@
 ;;;; mwc.scm
 ;;;; Kon Lovett, May '06
 
-(module mwc
-
-(;export
-  make-random-source-mwc)
-
-(import scheme)
-(import (chicken base))
-
-(import (chicken foreign))
-(import (chicken fixnum))
-(import (chicken flonum))
-
-(import
-  srfi-4
-  (only type-errors error-positive-integer)
-  random-source
-  entropy-source
-  (only srfi-27-numbers
-    check-positive-integer
-    random-large-integer random-large-real
-    native-real-precision?))
-
-(declare
-  (not usual-integrations
-    <=  exact->inexact inexact->exact))
-
 #>
 #include <math.h>
 
@@ -169,6 +143,32 @@ uniformu32_jth_offset_state( uint32_t *state, uint32_t j )
 #undef bitsizeof
 <#
 
+(declare
+  (not usual-integrations
+    <=  exact->inexact inexact->exact))
+
+(module mwc
+
+(;export
+  make-random-source-mwc)
+
+(import scheme)
+(import (chicken base))
+
+(import (chicken foreign))
+(import (chicken fixnum))
+(import (chicken flonum))
+
+(import
+  srfi-4
+  (only type-errors error-positive-integer)
+  random-source
+  entropy-source
+  (only srfi-27-numbers
+    check-positive-integer
+    random-large-integer random-large-real
+    native-real-precision?))
+
 (define init_state (foreign-lambda void "init_state" nonnull-u32vector unsigned-integer64))
 
 (define uniformu32_ith_state (foreign-lambda void "uniformu32_ith_state" nonnull-u32vector unsigned-integer32))
@@ -192,9 +192,13 @@ uniformu32_jth_offset_state( uint32_t *state, uint32_t j )
 
 (define eMAX (inexact->exact fpMAX)) ;Create a "bignum" if necessary
 
-(define-constant INITIAL-SEED maximum-unsigned-integer32-flonum)
+(define-constant INITIAL-SEED (inexact->exact maximum-unsigned-integer32-flonum))
 
 (define-constant STATE-LENGTH 2)
+
+(define-constant STATE-VALUE-MAXIMUM 4294967295)
+
+(define-constant STATE-EXTERNAL-LENGTH 3)
 
 (define INTERNAL-ID 'mwc)
 (define EXTERNAL-ID 'mwc)
@@ -213,13 +217,14 @@ uniformu32_jth_offset_state( uint32_t *state, uint32_t j )
 
 (define (mwc-pack-state external-state)
   (unless (mwc-external-state? external-state)
-      (error 'mwc-pack-state "malformed state" external-state) )
-  (let* ((state (make-state))
-         (setter
-          (lambda (i x)
-            (if (and (integer? x) (<= 0 x 4294967295))
-              (u32vector-set! state i x)
-              (error 'mwc-pack-state "illegal value" x)))) )
+    (error 'mwc-pack-state "malformed state" external-state) )
+  (let* (
+    (state (make-state))
+    (setter
+      (lambda (i x)
+        (if (and (integer? x) (<= 0 x STATE-VALUE-MAXIMUM))
+          (u32vector-set! state i x)
+          (error 'mwc-pack-state "illegal state value" x)))) )
     (setter 0 (cadr external-state))
     (setter 1 (caddr external-state))
     state ) )
@@ -228,13 +233,13 @@ uniformu32_jth_offset_state( uint32_t *state, uint32_t j )
   (and
     (pair? obj)
     (eq? EXTERNAL-ID (car obj))
-    (fx= (fx+ STATE-LENGTH 1) (length obj)) ) )
+    (fx= STATE-EXTERNAL-LENGTH (length obj)) ) )
 
 ;; 64 bit entropy used as a bit source, not a number source!
 (define (mwc-randomize-state state entropy-source)
   (init_state
     state
-    (exact->inexact
+    (inexact->exact
       (modulo
         (fpabs (entropy-source-f64-integer entropy-source))
         fpMAX)))
@@ -242,7 +247,7 @@ uniformu32_jth_offset_state( uint32_t *state, uint32_t j )
 
 (define (mwc-pseudo-randomize-state i j)
   (let ((state (make-state)))
-    (init_state state 0.0)
+    (init_state state 0)
     (uniformu32_ith_state state i)
     (uniformu32_jth_offset_state state j)
     state ) )
