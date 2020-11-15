@@ -158,7 +158,7 @@
     (csc-options "-strict-types" "-O3" "-d0" "-no-procedure-checks-for-toplevel-bindings"))
   (extension srfi-27-exponentials
     (types-file)
-    (component-dependencies )
+    (component-dependencies srfi-27-distributions-support)
     (csc-options "-strict-types" "-O3" "-d0" "-no-procedure-checks-for-toplevel-bindings"))
   (extension srfi-27-geometrics
     (types-file)
