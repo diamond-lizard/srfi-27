@@ -13,6 +13,7 @@
 
 (import scheme)
 (import (chicken base))
+(import (chicken type))
 
 (import
   (only type-checks check-input-port check-procedure check-symbol check-string check-number)
