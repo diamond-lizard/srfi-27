@@ -195,7 +195,7 @@
     (csc-options "-strict-types" "-O3" "-d0" "-no-procedure-checks-for-toplevel-bindings"))
   (extension srfi-27-vector
     (types-file)
-    (component-dependencies )
+    (component-dependencies srfi-27-distributions)
     (csc-options "-strict-types" "-O3" "-d0" "-no-procedure-checks-for-toplevel-bindings"))
   ;; Composite Source Modules
   (extension composite-entropy-source
