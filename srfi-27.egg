@@ -1,4 +1,4 @@
-;;;; srfi-27.egg  -*- scheme -*
+;;;; srfi-27.egg  -*- scheme -*-
 
 ((synopsis "Sources of Random Bits")
  (version "4.0.0")
