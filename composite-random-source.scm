@@ -39,6 +39,8 @@ Experimental at best.
 (import (chicken base))
 (import (chicken type))
 (import (chicken keyword))
+(import (chicken fixnum))
+(import (chicken flonum))
 
 (import
   (only (chicken string) conc reverse-string-append ->string)
