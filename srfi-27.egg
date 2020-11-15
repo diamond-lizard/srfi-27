@@ -196,6 +196,7 @@
     srfi-27-binomials
     srfi-27-cauchys
     srfi-27-exponentials
+    srfi-27-gammas
     srfi-27-geometrics
     srfi-27-lognormals
     srfi-27-normals
