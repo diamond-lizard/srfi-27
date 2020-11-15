@@ -8,6 +8,7 @@
 
 (import scheme)
 (import (chicken base))
+(import (chicken foreign))
 
 (import entropy-source entropy-procedure)
 
