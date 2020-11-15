@@ -79,7 +79,7 @@
     (unix
       (extension entropy-unix
         (types-file)
-        (component-dependencies )
+        (component-dependencies entropy-port entropy-source)
         (csc-options
           "-strict-types"
           "-O3" "-d0"
