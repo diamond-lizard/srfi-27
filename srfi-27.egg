@@ -191,7 +191,11 @@
     (csc-options "-strict-types" "-O3" "-d0" "-no-procedure-checks-for-toplevel-bindings"))
   (extension srfi-27-distributions
     (types-file)
-    (component-dependencies srfi-27-exponentials srfi-27-normals srfi-27-poissons srfi-27-triangles)
+    (component-dependencies
+    srfi-27-exponentials
+    srfi-27-normals
+    srfi-27-poissons
+    srfi-27-triangles)
     (csc-options "-strict-types" "-O3" "-d0" "-no-procedure-checks-for-toplevel-bindings"))
   (extension srfi-27-vector
     (types-file)
