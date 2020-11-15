@@ -194,6 +194,7 @@
     (component-dependencies
     srfi-27-bernoullis
     srfi-27-binomials
+    srfi-27-cauchys
     srfi-27-exponentials
     srfi-27-geometrics
     srfi-27-lognormals
