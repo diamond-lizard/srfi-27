@@ -1,34 +1,6 @@
 ;;;; moa.scm
 ;;;; Kon Lovett, Oct '09
 
-(module moa
-
-(;export
-  make-random-source-moa)
-
-(import scheme)
-(import (chicken base))
-
-(import (except scheme <= inexact->exact exact->inexact number?))
-(import scheme)
-(import (chicken base))
-(import (chicken foreign))
-(import (chicken fixnum))
-(import (chicken flonum))
-
-(import
-  srfi-4
-  random-source
-  entropy-source
-  (only srfi-27-numbers
-    check-positive-integer
-    random-large-integer random-large-real
-    native-real-precision?))
-
-(declare
-  (not usual-integrations
-    <= exact->inexact inexact->exact))
-
 #>
 #include <math.h>
 
@@ -179,6 +151,36 @@ randomu32( uint32_t *state, uint32_t m )
 #undef bitsizeof
 <#
 
+(declare
+  (not usual-integrations
+    <= exact->inexact inexact->exact))
+
+(module moa
+
+(;export
+  make-random-source-moa)
+
+(import scheme)
+(import (chicken base))
+
+(import (except scheme <= inexact->exact exact->inexact number?))
+(import scheme)
+(import (chicken base))
+(import (chicken foreign))
+(import (chicken fixnum))
+(import (chicken flonum))
+
+(import
+  srfi-4
+  random-source
+  entropy-source
+  (only srfi-27-numbers
+    check-positive-integer
+    random-large-integer random-large-real
+    native-real-precision?))
+
+;;;
+
 (define init_state (foreign-lambda void "init_state" nonnull-u32vector unsigned-integer64))
 
 (define moa-random-integer (foreign-lambda unsigned-integer32 "randomu32" nonnull-u32vector unsigned-integer32))
@@ -199,9 +201,9 @@ randomu32( uint32_t *state, uint32_t m )
 (define-constant fpMAX maximum-unsigned-integer32-flonum)  ;2^32 - 1
 (define-constant LOG2-PERIOD 250)
 
-(define eMAX (inexact->exact fpMAX)) ;Create a "bignum" if necessary
+(define-constant eMAX (inexact->exact fpMAX)) ;Create a "bignum" if necessary
 
-(define-constant INITIAL-SEED maximum-unsigned-integer32-flonum)
+(define-constant INITIAL-SEED (inexact->exact maximum-unsigned-integer32-flonum))
 
 (define-constant STATE-LENGTH 10)
 
@@ -243,7 +245,7 @@ randomu32( uint32_t *state, uint32_t m )
 (define (moa-randomize-state state entropy-source)
   (init_state
     state
-    (exact->inexact
+    (inexact->exact
       (modulo
         (fpabs (entropy-source-f64-integer entropy-source))
         fpMAX)))
@@ -251,7 +253,7 @@ randomu32( uint32_t *state, uint32_t m )
 
 (define (moa-pseudo-randomize-state i j)
   (let ((state (make-state)))
-    (init_state state (exact->inexact (+ i j)))
+    (init_state state (+ i j))
     state ) )
 
 (define (moa-random-large state n)
