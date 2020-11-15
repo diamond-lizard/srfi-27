@@ -195,13 +195,17 @@
     srfi-27-bernoullis
     srfi-27-binomials
     srfi-27-cauchys
+    srfi-27-erlangs
     srfi-27-exponentials
     srfi-27-gammas
     srfi-27-geometrics
+    srfi-27-levys
     srfi-27-lognormals
     srfi-27-normals
+    srfi-27-paretos
     srfi-27-poissons
-    srfi-27-triangles)
+    srfi-27-triangles
+    srfi-27-weibulls)
     (csc-options "-strict-types" "-O3" "-d0" "-no-procedure-checks-for-toplevel-bindings"))
   (extension srfi-27-vector
     (types-file)
