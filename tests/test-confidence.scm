@@ -5,6 +5,7 @@
 (import srfi-27)
 (import random-source)
 (import mwc moa mrg32k3a #;bsdrnd)  ;load them all
+(import (chicken fixnum))
 
 ;; Select platform specific entropy source
 
