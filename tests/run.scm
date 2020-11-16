@@ -1,45 +1,73 @@
-;;;; srfi-27 run.scm
+;;;; srfi-27 run.scm -*- Scheme -*-
 ;;;; Kon Lovett, Dec '17
+
+(import scheme)
+
+;;; Create Egg Const
+
+(define EGG-NAME "srfi-27")
 
 ;chicken-install invokes as "<csi> -s run.scm <eggnam> <eggdir>"
 
-(define *this-egg-name* "srfi-27")
-
-(import (chicken file))
-(import (chicken process-context))
-(import (chicken process))
-(import (chicken pathname))
-
-;no -disable-interrupts
-(define *csc-options* "-inline-global -scrutinize -optimize-leaf-routines -local -inline -specialize -unsafe -no-trace -no-lambda-info -clustering -lfa2")
+(import (only (chicken pathname)
+  make-pathname pathname-file pathname-replace-directory pathname-strip-extension))
+(import (only (chicken process) system))
+(import (only (chicken process-context) argv))
+(import (only (chicken format) format))
+(import (only (chicken file) file-exists? find-files))
+(import (only (chicken irregex) irregex irregex-match?))
 
 (define *args* (argv))
 
-(define (test-name #!optional (eggnam *this-egg-name*))
-  (string-append eggnam "-test") )
-
-(define (this-egg-name #!optional (def *this-egg-name*))
+(define (egg-name args #!optional (def EGG-NAME))
   (cond
-    ((<= 4 (length *args*))
-      (cadddr *args*) )
-    (def
-      def )
+    ((<= 4 (length *args*)) (cadddr *args*) )
+    (def                    def )
     (else
-      (error 'test "cannot determine egg-name") ) ) )
+      (error 'run "cannot determine egg-name") ) ) )
+
+(define *current-directory* (cond-expand (unix "./") (else #f)))
+(define *egg* (egg-name *args*))
+
+;no -disable-interrupts or -no-lambda-info
+(define *csc-options* "-inline-global -local -inline \
+  -specialize -optimize-leaf-routines -clustering -lfa2 \
+  -no-trace -unsafe \
+  -strict-types")
+
+(define *test-files-rx* (irregex '(: (+ graph) #\- "test" #\. "scm")))
+(define (test-filename name) (string-append name "-test"))
+(define (test-files) (find-files "." #:test *test-files-rx* #:limit 1))
+
+(define (ensure-test-source-name name)
+  (if (irregex-match? *test-files-rx* name)
+    name
+    (make-pathname *current-directory* (test-filename name) "scm") ) )
+
+(define (run-test-evaluated source)
+  (format #t "*** ~A - csi ***~%" (pathname-file source))
+  (system (string-append "csi -s " source)) )
+
+(define (run-test-compiled source csc-options)
+  (format #t "*** ~A - csc ~A ***~%" (pathname-file source) csc-options)
+  ;csc output is in current directory
+  (system (string-append "csc" " " csc-options " " source))
+  (system (pathname-replace-directory (pathname-strip-extension source) *current-directory*)) )
 
 ;;;
 
-(set! *this-egg-name* (this-egg-name))
-
-(define (run-test #!optional (eggnam *this-egg-name*) (cscopts *csc-options*))
-  (let ((tstnam (test-name eggnam)))
-    (print "*** csi ***")
-    (system (string-append "csi -s " (make-pathname #f tstnam "scm")))
+(define (run-test #!optional (name *egg*) (csc-options *csc-options*))
+  (let (
+    (source (ensure-test-source-name name)) )
+    (unless (file-exists? source)
+      (error 'run "no such file" source) )
+    (run-test-evaluated source)
     (newline)
-    (print "*** csc (" cscopts ") ***")
-    (system (string-append "csc" " " cscopts " " (make-pathname #f tstnam "scm")))
-    (system (make-pathname (cond-expand (unix "./") (else #f)) tstnam)) ) )
+    (run-test-compiled source csc-options) ) )
 
-;;;
+(define (run-tests #!optional (tests (test-files)) (csc-options *csc-options*))
+  (for-each (cut run-test <> csc-options) tests) )
 
-(run-test)
+;;; Do Test
+
+(run-tests)
