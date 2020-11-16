@@ -51,6 +51,7 @@
 (import
   scheme
   (chicken base)
+  (chicken platform)
   (chicken type)
   (only srfi-4 make-u8vector make-f64vector)
   (only miscmacros define-parameter)
@@ -61,6 +62,8 @@
   type-checks srfi-4-checks
   random-source mrg32k3a
   entropy-source entropy-clock)
+
+(register-feature! 'srfi-27)
 
 ;;;
 
