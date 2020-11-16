@@ -3,6 +3,7 @@
 (import scheme)
 (import (chicken base))
 (import srfi-27 mrg32k3a)
+(import (chicken fixnum))
 
 ;; Select platform specific entropy source
 
