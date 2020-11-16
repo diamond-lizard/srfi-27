@@ -38,13 +38,6 @@
     error-argument-type
     error-open-interval error-closed-interval))
 
-(declare
-  (not usual-integrations
-    <= < zero? positive? negative?
-    + * - / quotient expt
-    integer? real?
-    exact->inexact inexact->exact) )
-
 ;;;
 
 (include "srfi-27-common-types")
@@ -107,21 +100,13 @@
 ; 'prec-max - maximum range of "core" random integer generator (maybe inexact)
 ; 'm        - exact maximum range (passed so conversion performed by caller)
 
-; Chicken 'numbers' egg determines precision on arg1 so
-; convert result of the "base" random integer (which may return a
-; flonum due to integer representation issues) into an exact integer
-; to prevent infinity generation when the value of n * m is very large.
-; (the conversion of the large exact integer to a flonum may result in
-; +inf)
-
-(: random-power (procedure * number full-integer fixnum --> full-number))
+(: random-power (procedure * number integer fixnum --> number))
 ;
 (define (random-power rndint state prec-max m k) ;n = m^k, k >= 1
-  (let (
-    (rnd (lambda () (inexact->exact (rndint state prec-max)))) )
+  (let ((max (inexact->exact prec-max)))
     (do ((k k (fx- k 1))
-         (n (rnd) (+ (rnd) (* n m))) )
-        ((fx= 1 k) n) ) ) )
+         (n (rndint state max) (+ (rndint state max) (* n m))) )
+        ((fx= 1 k) n)) ) )
 
 ; Large Integers
 ; ==============
@@ -131,7 +116,7 @@
 ; k such that m^k >= n and then use the rejection method to choose
 ; uniformly from the range {0..n-1}.
 
-(: random-large-integer (procedure * number full-integer full-integer --> full-number))
+(: random-large-integer (procedure * number integer integer --> number))
 ;
 (define (random-large-integer rndint state prec-max m n) ;n > m
   (do ((k 2 (fx+ k 1))
@@ -156,7 +141,7 @@
 ; If you know more about the floating point number types of the
 ; Scheme system, this can be improved.
 
-(: random-large-integer (procedure * number full-integer number --> full-number))
+(: random-large-real (procedure * number integer number --> number))
 ;
 (define (random-large-real rndint state prec-max m prec)
   (do ((k 1 (fx+ k 1))
