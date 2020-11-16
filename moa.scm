@@ -151,10 +151,6 @@ randomu32( uint32_t *state, uint32_t m )
 #undef bitsizeof
 <#
 
-(declare
-  (not usual-integrations
-    <= exact->inexact inexact->exact))
-
 (module moa
 
 (;export

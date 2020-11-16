@@ -24,10 +24,6 @@
     random-large-integer random-large-real
     native-real-precision?))
 
-(declare
-  (not usual-integrations
-    <= exact->inexact inexact->exact))
-
 #>
 /* ***************************************************************************** */
 /* Copyright:      Francois Panneton and Pierre L'Ecuyer, University of Montreal */

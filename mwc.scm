@@ -143,10 +143,6 @@ uniformu32_jth_offset_state( uint32_t *state, uint32_t j )
 #undef bitsizeof
 <#
 
-(declare
-  (not usual-integrations
-    <=  exact->inexact inexact->exact))
-
 (module mwc
 
 (;export

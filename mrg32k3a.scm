@@ -117,10 +117,6 @@ mrg32k3a_random_real( double *state )
 #undef M1
 <#
 
-(declare
-  (not usual-integrations
-    <= inexact->exact exact->inexact))
-
 (module mrg32k3a
 
 (;export

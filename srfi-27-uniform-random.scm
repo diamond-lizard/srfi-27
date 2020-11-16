@@ -23,10 +23,6 @@
     check-integer check-positive-integer
     check-real-precision))
 
-(declare
-  (not usual-integrations
-    + - * quotient = <))
-
 ;;;
 
 (include "srfi-27-common-types")
