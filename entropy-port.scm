@@ -47,15 +47,15 @@
       ;
       docu
       ;
-      (lambda () (with-timed-resource tr u8gen))
+      (lambda () (call-with-timed-resource tr u8gen))
       ;
-      (lambda () (with-timed-resource tr f64gen))
+      (lambda () (call-with-timed-resource tr f64gen))
       ;
       (lambda (u8cnt u8vec)
-        (with-timed-resource tr (lambda (r) (entropic-u8vector-filled u8cnt u8vec (u8gen r)))))
+        (call-with-timed-resource tr (lambda (r) (entropic-u8vector-filled u8cnt u8vec (u8gen r)))))
       ;
       (lambda (f64cnt f64vec)
-        (with-timed-resource tr (lambda (r) (entropic-f64vector-filled f64cnt f64vec (f64gen r))))) ) ) )
+        (call-with-timed-resource tr (lambda (r) (entropic-f64vector-filled f64cnt f64vec (f64gen r))))) ) ) )
 
 (define (*make-entropy-source/timed-port-resource tr-ctor name docu)
   (let ((tr (tr-ctor)))
@@ -67,15 +67,15 @@
       ;
       docu
       ;
-      (lambda () (with-timed-resource tr port-entropic-u8))
+      (lambda () (call-with-timed-resource tr port-entropic-u8))
       ;
-      (lambda () (with-timed-resource tr port-entropic-f64))
+      (lambda () (call-with-timed-resource tr port-entropic-f64))
       ;
       (lambda (u8cnt u8vec)
-        (with-timed-resource tr (cut port-entropic-u8vector <> u8cnt u8vec)))
+        (call-with-timed-resource tr (cut port-entropic-u8vector <> u8cnt u8vec)))
       ;
       (lambda (f64cnt f64vec)
-        (with-timed-resource tr (cut port-entropic-f64vector <> f64cnt f64vec))) ) ) )
+        (call-with-timed-resource tr (cut port-entropic-f64vector <> f64cnt f64vec))) ) ) )
 
 (define (*make-entropy-source/port-open-timed opener timeout name docu)
   (*make-entropy-source/timed-port-resource
