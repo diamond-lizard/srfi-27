@@ -17,10 +17,6 @@
 (define-type ratnum (struct ratnum))
 (define-type compnum (struct compnum))
 
-(define-type full-integer (or fixnum number bignum))  ;close (;-)
-
-(define-type full-number (or fixnum float number bignum ratnum compnum))
-
 ;;
 
 (define-type entropy-source (struct entropy-source))
