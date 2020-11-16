@@ -7,6 +7,7 @@
 
 (import (chicken file))
 (import (chicken process-context))
+(import (chicken process))
 
 ;no -disable-interrupts
 (define *csc-options* "-inline-global -scrutinize -optimize-leaf-routines -local -inline -specialize -unsafe -no-trace -no-lambda-info -clustering -lfa2")
