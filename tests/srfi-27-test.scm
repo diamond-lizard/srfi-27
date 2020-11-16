@@ -15,6 +15,8 @@
 
 (print "*** Original Tests ***")
 
+(import (chicken process))
+
 (system* "csi -n -s test-mrg32k3a.scm")
 (system* "csi -n -s test-confidence")
 ;(system* "csi -n -s test-diehard") ;errors
