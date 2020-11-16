@@ -5,7 +5,7 @@
 
 (define *this-egg-name* "srfi-27")
 
-(import files)
+(import (chicken file))
 
 ;no -disable-interrupts
 (define *csc-options* "-inline-global -scrutinize -optimize-leaf-routines -local -inline -specialize -unsafe -no-trace -no-lambda-info -clustering -lfa2")
