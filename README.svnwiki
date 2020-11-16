@@ -1005,7 +1005,7 @@ undocumented implementation API.
 
 == Version history
 
-; 4.0.0 : Ported to Chicken 5
+; [[https://github.com/diamond-lizard/srfi-27/releases/tag/4.0.0|4.0.0]] : Ported to Chicken 5
 ; 3.4.1 : Fix for {{composite-entropy-source}}.
 ; 3.4.0 : Added types.
 ; 3.3.2 : Added types (except entropy & vector modules). {{entropy-source-random}} & {{entropy-source-urandom}} are timed-resources.
