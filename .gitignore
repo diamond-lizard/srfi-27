@@ -8,3 +8,4 @@
 *.so
 *.swp
 *.types
+tests/srfi-27-test
